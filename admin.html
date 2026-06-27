@@ -105,7 +105,7 @@ const DEFAULTS = {
   engagements:[{title:"Sécurité",desc:"Procédures strictes..."},{title:"Ponctualité",desc:"Des créneaux respectés..."},{title:"Fiabilité",desc:"Un engagement constant..."},{title:"Innovation",desc:"Télématique, suivi en temps réel..."},{title:"Développement durable",desc:"Optimisation des trajets..."}],
   testimonials:[],
   news:[],
-  contact:{phone:"+33 (0)2 35 00 00 00",email:"contact@gallfray-fils.fr",address:"Parc logistique du Pont de Normandie, 76600 Le Havre",mapLat:49.49,mapLng:0.11},
+  contact:{phone:"",email:"",address:"",mapLat:49.49,mapLng:0.11,discordWebhook:""},
   fleet:{baseCity:"Le Havre",baseLat:49.49,baseLng:0.11,
     deliveries:[],
     drivers:[]}
@@ -252,11 +252,20 @@ function buildEditor(){
   c.appendChild(listEditor(W.news,[{key:'title',label:'Titre'},{key:'date',label:'Date'},{key:'tag',label:'Étiquette'},{key:'excerpt',label:'Résumé',type:'area'},{key:'image',label:'Image',type:'image'}],'Ajouter un article',save));
   E.appendChild(c);
 
-  // Contact
-  c=sectionCard('Contact');
+  // Contact / Discord
+  c=sectionCard('Formulaire de contact','Le formulaire du site envoie chaque demande dans votre salon Discord via un webhook (embed).');
+  const wh=document.createElement('div');
+  wh.innerHTML='<label class="lbl">URL du webhook Discord</label>';
+  const whi=document.createElement('input'); whi.className='fld'; whi.placeholder='https://discord.com/api/webhooks/...'; whi.value=W.contact.discordWebhook||'';
+  whi.addEventListener('input',()=>W.contact.discordWebhook=whi.value);
+  wh.appendChild(whi);
+  const tip=document.createElement('p'); tip.className='text-xs text-zinc-500 mt-2';
+  tip.innerHTML='Dans Discord : <b>Paramètres du salon → Intégrations → Webhooks → Nouveau webhook</b>, puis « Copier l\'URL du webhook » et collez-la ici.';
+  wh.appendChild(tip);
+  c.appendChild(wh);
+  const hr=document.createElement('p'); hr.className='lbl mt-6'; hr.textContent='Coordonnées affichées dans le pied de page (optionnel)'; c.appendChild(hr);
   c.appendChild(rowGrid([field('Téléphone',W.contact.phone,v=>W.contact.phone=v),field('Email',W.contact.email,v=>W.contact.email=v)]));
   c.appendChild(field('Adresse',W.contact.address,v=>W.contact.address=v,'area'));
-  c.appendChild(rowGrid([field('Latitude (carte)',W.contact.mapLat,v=>W.contact.mapLat=v,'number'),field('Longitude (carte)',W.contact.mapLng,v=>W.contact.mapLng=v,'number')]));
   E.appendChild(c);
 
   // Flotte
