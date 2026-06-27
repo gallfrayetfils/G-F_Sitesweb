@@ -250,44 +250,33 @@
 
 <!-- CONTACT -->
 <section id="contact" class="relative py-24 lg:py-32 bg-mist overflow-hidden">
-  <div class="relative mx-auto max-w-7xl px-5 lg:px-8">
-    <div class="grid lg:grid-cols-2 gap-12">
-      <div class="reveal">
-        <p class="eyebrow text-electric">Contact</p>
-        <h2 class="mt-4 font-display font-700 text-3xl lg:text-[2.6rem] leading-tight tracking-tight">Parlons de votre prochain transport</h2>
-        <p class="mt-5 text-navy/60 text-lg leading-relaxed">Un projet, un devis, une question ? Notre équipe vous répond sous 24 heures ouvrées.</p>
-        <div class="mt-9 space-y-4">
-          <a id="c-phone" class="flex items-center gap-4 bg-white rounded-xl p-4 shadow-soft border border-navy/5 hover:shadow-lift transition group">
-            <span class="grid place-items-center w-12 h-12 rounded-xl bg-electric/10 text-electric"><svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h4l2 5-3 2a12 12 0 005 5l2-3 5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"/></svg></span>
-            <span><span class="block eyebrow text-[0.55rem] text-navy/40">Téléphone</span><span id="c-phone-t" class="block font-600 group-hover:text-electric transition"></span></span>
-          </a>
-          <a id="c-mail" class="flex items-center gap-4 bg-white rounded-xl p-4 shadow-soft border border-navy/5 hover:shadow-lift transition group">
-            <span class="grid place-items-center w-12 h-12 rounded-xl bg-electric/10 text-electric"><svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span>
-            <span><span class="block eyebrow text-[0.55rem] text-navy/40">Email</span><span id="c-mail-t" class="block font-600 group-hover:text-electric transition"></span></span>
-          </a>
-          <div class="flex items-center gap-4 bg-white rounded-xl p-4 shadow-soft border border-navy/5">
-            <span class="grid place-items-center w-12 h-12 rounded-xl bg-electric/10 text-electric"><svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4.5 8-12a8 8 0 10-16 0c0 7.5 8 12 8 12z"/><circle cx="12" cy="10" r="3"/></svg></span>
-            <span><span class="block eyebrow text-[0.55rem] text-navy/40">Adresse</span><span id="c-addr" class="block font-600"></span></span>
-          </div>
+  <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[520px] h-[260px] bg-zinc-300/40 blur-[120px] rounded-full"></div>
+  <div class="relative mx-auto max-w-2xl px-5 lg:px-8">
+    <div class="reveal text-center">
+      <p class="eyebrow text-electric">Contact</p>
+      <h2 class="mt-4 font-display font-700 text-3xl lg:text-[2.6rem] leading-tight tracking-tight">Parlons de votre prochain transport</h2>
+      <p class="mt-5 text-navy/60 text-lg leading-relaxed">Un projet, un devis, une question ? Écrivez-nous : notre équipe revient vers vous au plus vite.</p>
+    </div>
+    <div class="reveal mt-10">
+      <form id="contact-form" class="bg-white rounded-3xl p-7 lg:p-9 shadow-soft border border-navy/5" novalidate>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div><label for="nom" class="block text-navy/70 text-sm mb-2">Nom complet *</label><input id="nom" type="text" required class="w-full rounded-xl bg-mist border border-navy/10 px-4 py-3 focus:border-electric transition" placeholder="Jean Dupont" /></div>
+          <div><label for="ent" class="block text-navy/70 text-sm mb-2">Entreprise</label><input id="ent" type="text" class="w-full rounded-xl bg-mist border border-navy/10 px-4 py-3 focus:border-electric transition" placeholder="Votre société" /></div>
+          <div><label for="email" class="block text-navy/70 text-sm mb-2">Email</label><input id="email" type="email" class="w-full rounded-xl bg-mist border border-navy/10 px-4 py-3 focus:border-electric transition" placeholder="jean@entreprise.fr" /></div>
+          <div><label for="tel" class="block text-navy/70 text-sm mb-2">Téléphone</label><input id="tel" type="tel" class="w-full rounded-xl bg-mist border border-navy/10 px-4 py-3 focus:border-electric transition" placeholder="06 00 00 00 00" /></div>
         </div>
-        <div class="mt-6 rounded-2xl overflow-hidden border border-navy/10 shadow-soft"><iframe id="c-map" title="Localisation" class="w-full h-64" loading="lazy"></iframe></div>
-      </div>
-      <div class="reveal">
-        <form id="contact-form" class="bg-white rounded-3xl p-7 lg:p-9 shadow-soft border border-navy/5" novalidate>
-          <h3 class="font-display font-600 text-xl">Demande de devis</h3>
-          <p class="mt-1 text-navy/50 text-sm">Les champs marqués d'un * sont requis.</p>
-          <div class="mt-6 grid sm:grid-cols-2 gap-4">
-            <div><label for="nom" class="block text-navy/70 text-sm mb-2">Nom complet *</label><input id="nom" type="text" required class="w-full rounded-xl bg-mist border border-navy/10 px-4 py-3 focus:border-electric transition" placeholder="Jean Dupont" /></div>
-            <div><label for="ent" class="block text-navy/70 text-sm mb-2">Entreprise</label><input id="ent" type="text" class="w-full rounded-xl bg-mist border border-navy/10 px-4 py-3 focus:border-electric transition" placeholder="Votre société" /></div>
-            <div><label for="email" class="block text-navy/70 text-sm mb-2">Email *</label><input id="email" type="email" required class="w-full rounded-xl bg-mist border border-navy/10 px-4 py-3 focus:border-electric transition" placeholder="jean@entreprise.fr" /></div>
-            <div><label for="tel" class="block text-navy/70 text-sm mb-2">Téléphone</label><input id="tel" type="tel" class="w-full rounded-xl bg-mist border border-navy/10 px-4 py-3 focus:border-electric transition" placeholder="06 00 00 00 00" /></div>
-          </div>
-          <div class="mt-4"><label for="msg" class="block text-navy/70 text-sm mb-2">Votre message *</label><textarea id="msg" rows="4" required class="w-full rounded-xl bg-mist border border-navy/10 px-4 py-3 focus:border-electric transition resize-none" placeholder="Décrivez votre besoin, vos volumes, vos destinations…"></textarea></div>
-          <button type="submit" class="btn-glow mt-6 w-full flex items-center justify-center gap-2 rounded-xl bg-navy px-6 py-4 font-600 text-white shadow-glow">Envoyer ma demande
-            <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg></button>
-          <p id="form-status" class="mt-4 text-sm hidden" role="status" aria-live="polite"></p>
-        </form>
-      </div>
+        <div class="mt-4"><label for="sujet" class="block text-navy/70 text-sm mb-2">Type de demande</label>
+          <select id="sujet" class="w-full rounded-xl bg-mist border border-navy/10 px-4 py-3 focus:border-electric transition">
+            <option>Transport national</option><option>Transport international</option><option>Logistique</option><option>Livraison express</option><option>Gestion de flotte</option><option>Solution sur mesure</option><option>Autre demande</option>
+          </select>
+        </div>
+        <div class="mt-4"><label for="msg" class="block text-navy/70 text-sm mb-2">Votre message *</label><textarea id="msg" rows="5" required class="w-full rounded-xl bg-mist border border-navy/10 px-4 py-3 focus:border-electric transition resize-none" placeholder="Décrivez votre besoin, vos volumes, vos destinations…"></textarea></div>
+        <button type="submit" id="send-btn" class="btn-glow mt-6 w-full flex items-center justify-center gap-2 rounded-xl bg-navy px-6 py-4 font-600 text-white shadow-glow">
+          <span id="send-label">Envoyer ma demande</span>
+          <svg id="send-ico" viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg>
+        </button>
+        <p id="form-status" class="mt-4 text-sm hidden text-center" role="status" aria-live="polite"></p>
+      </form>
     </div>
   </div>
 </section>
@@ -337,7 +326,7 @@ const DEFAULTS = {
   engagements:[{title:"Sécurité",desc:"Procédures strictes, conducteurs formés et marchandises protégées à chaque étape."},{title:"Ponctualité",desc:"Des créneaux respectés et une information proactive en cas d'aléa."},{title:"Fiabilité",desc:"Un engagement constant, mesuré par des indicateurs partagés."},{title:"Innovation",desc:"Télématique, planification intelligente et suivi en temps réel."},{title:"Développement durable",desc:"Optimisation des trajets, motorisations propres et réduction de l'empreinte carbone."}],
   testimonials:[],
   news:[],
-  contact:{phone:"+33 (0)2 35 00 00 00",email:"contact@gallfray-fils.fr",address:"Parc logistique du Pont de Normandie, 8 rue des Transporteurs · 76600 Le Havre",mapLat:49.49,mapLng:0.11},
+  contact:{phone:"",email:"",address:"",mapLat:49.49,mapLng:0.11,discordWebhook:""},
   fleet:{baseCity:"Le Havre",baseLat:49.49,baseLng:0.11,
     deliveries:[],
     drivers:[]}
@@ -354,8 +343,9 @@ function brandMarkup(b, dark){
   <span class="leading-none"><span class="brand-name font-script text-3xl">${esc(b.name)}</span><span class="block eyebrow text-[0.5rem] opacity-50 -mt-0.5">${esc(b.tagline)}</span></span>`;
 }
 
-let MAP, fleetData;
+let MAP, fleetData, SITE=null;
 function render(D){
+  SITE = D;
   fleetData = D.fleet;
   // Brand (navbar)
   const bl = document.getElementById('brand-link');
@@ -405,15 +395,12 @@ function render(D){
       <div class="relative h-52 overflow-hidden"><img src="${esc(n.image)}" alt="${esc(n.title)}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" /><span class="absolute top-4 left-4 rounded-full bg-black/60 backdrop-blur px-3 py-1 text-xs font-500 text-white">${esc(n.tag)}</span></div>
       <div class="p-6"><time class="eyebrow text-white/40 text-[0.6rem]">${esc(n.date)}</time><h3 class="mt-3 font-display font-600 text-lg leading-snug text-white">${esc(n.title)}</h3><p class="mt-3 text-sm text-white/55 leading-relaxed">${esc(n.excerpt)}</p></div></article>`).join('');
   // Contact
-  document.getElementById('c-phone').href = 'tel:'+D.contact.phone.replace(/[^+\d]/g,'');
-  document.getElementById('c-phone-t').textContent = D.contact.phone;
-  document.getElementById('c-mail').href = 'mailto:'+D.contact.email;
-  document.getElementById('c-mail-t').textContent = D.contact.email;
-  document.getElementById('c-addr').textContent = D.contact.address;
-  const la=D.contact.mapLat, ln=D.contact.mapLng, d=0.07;
-  document.getElementById('c-map').src = `https://www.openstreetmap.org/export/embed.html?bbox=${ln-d}%2C${la-0.03}%2C${ln+d}%2C${la+0.03}&layer=mapnik&marker=${la}%2C${ln}`;
-  // Footer contact
-  document.getElementById('footer-contact').innerHTML = `<li>${esc(D.contact.phone)}</li><li>${esc(D.contact.email)}</li><li class="leading-relaxed">${esc(D.contact.address)}</li>`;
+  // Footer contact (masqué si tout est vide)
+  const fc=[D.contact.phone,D.contact.email,D.contact.address].filter(x=>x&&x.trim());
+  const fcEl=document.getElementById('footer-contact');
+  const fcCol=fcEl.closest('div');
+  if(fc.length){ fcEl.innerHTML = `${D.contact.phone?`<li>${esc(D.contact.phone)}</li>`:''}${D.contact.email?`<li>${esc(D.contact.email)}</li>`:''}${D.contact.address?`<li class="leading-relaxed">${esc(D.contact.address)}</li>`:''}`; if(fcCol)fcCol.style.display=''; }
+  else if(fcCol){ fcCol.style.display='none'; }
 
   // Masquage des sections vides
   const toggleSec=(secId,href,show)=>{const s=document.getElementById(secId);if(s)s.style.display=show?'':'none';document.querySelectorAll(`a[href="#${href}"]`).forEach(a=>{const li=a.closest('li');if(li)li.style.display=show?'':'none';});};
@@ -484,11 +471,49 @@ const menuBtn=document.getElementById('menu-btn'),mm=document.getElementById('mo
 function setMenu(o){mo=o;menuBtn.setAttribute('aria-expanded',o);mm.classList.toggle('scale-y-0',!o);mm.classList.toggle('opacity-0',!o);mm.classList.toggle('scale-y-100',o);mm.classList.toggle('opacity-100',o);io_.classList.toggle('hidden',o);ic_.classList.toggle('hidden',!o);}
 menuBtn.addEventListener('click',()=>setMenu(!mo));
 document.querySelectorAll('.mobile-link').forEach(l=>l.addEventListener('click',()=>setMenu(false)));
-// Form
+// Form -> Discord webhook (embed)
 const form=document.getElementById('contact-form'),fst=document.getElementById('form-status');
-form.addEventListener('submit',e=>{e.preventDefault();const ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(document.getElementById('email').value.trim());fst.classList.remove('hidden');
-  if(!document.getElementById('nom').value.trim()||!ok||!document.getElementById('msg').value.trim()){fst.textContent='Merci de renseigner votre nom, un email valide et votre message.';fst.className='mt-4 text-sm text-amber-600';return;}
-  fst.textContent='Merci ! Votre demande a bien été envoyée. Nous vous recontactons sous 24 h ouvrées.';fst.className='mt-4 text-sm text-emerald-600';form.reset();});
+function setStatus(msg,cls){fst.classList.remove('hidden');fst.textContent=msg;fst.className='mt-4 text-sm text-center '+cls;}
+form.addEventListener('submit',async e=>{
+  e.preventDefault();
+  const nom=document.getElementById('nom').value.trim();
+  const ent=document.getElementById('ent').value.trim();
+  const email=document.getElementById('email').value.trim();
+  const tel=document.getElementById('tel').value.trim();
+  const sujet=document.getElementById('sujet').value;
+  const msg=document.getElementById('msg').value.trim();
+  const emailOk=email===''||/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if(!nom||!msg||!emailOk){ setStatus("Merci d'indiquer au moins votre nom, un message, et un email valide si renseigné.",'text-amber-600'); return; }
+  const webhook = SITE && SITE.contact && SITE.contact.discordWebhook;
+  if(!webhook){ setStatus("Le formulaire n'est pas encore configuré. Réessayez plus tard.",'text-amber-600'); return; }
+
+  const btn=document.getElementById('send-btn'), lbl=document.getElementById('send-label');
+  btn.disabled=true; const old=lbl.textContent; lbl.textContent='Envoi…';
+
+  const payload={
+    username:"Gallfray & Fils — Site web",
+    embeds:[{
+      title:"📩 Nouvelle demande de contact",
+      color:4144454,
+      fields:[
+        {name:"Nom",value:nom.slice(0,256),inline:true},
+        {name:"Entreprise",value:(ent||"—").slice(0,256),inline:true},
+        {name:"Email",value:(email||"—").slice(0,256),inline:true},
+        {name:"Téléphone",value:(tel||"—").slice(0,256),inline:true},
+        {name:"Type de demande",value:(sujet||"—").slice(0,256),inline:true},
+        {name:"Message",value:msg.slice(0,1024)}
+      ],
+      timestamp:new Date().toISOString(),
+      footer:{text:"Formulaire du site — gallfray-fils"}
+    }]
+  };
+  try{
+    const res=await fetch(webhook,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+    if(res.ok||res.status===204){ setStatus("✓ Merci ! Votre demande a bien été envoyée.",'text-emerald-600'); form.reset(); }
+    else { setStatus("Une erreur est survenue à l'envoi. Merci de réessayer.",'text-amber-600'); }
+  }catch(err){ setStatus("Impossible d'envoyer le message pour le moment. Merci de réessayer.",'text-amber-600'); }
+  finally{ btn.disabled=false; lbl.textContent=old; }
+});
 
 /* ===== Chargement des données ===== */
 (async function load(){
