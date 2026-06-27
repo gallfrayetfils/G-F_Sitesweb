@@ -105,6 +105,7 @@ const DEFAULTS = {
   engagements:[{title:"Sécurité",desc:"Procédures strictes..."},{title:"Ponctualité",desc:"Des créneaux respectés..."},{title:"Fiabilité",desc:"Un engagement constant..."},{title:"Innovation",desc:"Télématique, suivi en temps réel..."},{title:"Développement durable",desc:"Optimisation des trajets..."}],
   testimonials:[],
   news:[],
+  jobs:[{title:"Conducteur SPL (H/F)",desc:"Transport de marchandises sur lignes nationales et internationales.",image:"https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=900&q=80"}],
   contact:{phone:"",email:"",address:"",mapLat:49.49,mapLng:0.11,discordWebhook:""},
   fleet:{baseCity:"Le Havre",baseLat:49.49,baseLng:0.11,
     deliveries:[],
@@ -196,6 +197,10 @@ function listEditor(arr,fields,addLabel,onChange){
 function buildEditor(){
   const E=$('editor'); E.innerHTML='';
   const save=autosave; // sauvegarde auto (ajout/suppression d'éléments)
+  // garde-fous (anciennes données)
+  W.jobs=W.jobs||[]; W.testimonials=W.testimonials||[]; W.news=W.news||[];
+  W.contact=W.contact||{}; if(W.contact.discordWebhook===undefined)W.contact.discordWebhook='';
+  W.fleet=W.fleet||{deliveries:[],drivers:[]}; W.fleet.deliveries=W.fleet.deliveries||[]; W.fleet.drivers=W.fleet.drivers||[];
 
   // Identité
   let c=sectionCard('Identité / Logo','Texte calligraphié par défaut, ou téléversez votre propre logo (PNG transparent conseillé).');
@@ -252,8 +257,13 @@ function buildEditor(){
   c.appendChild(listEditor(W.news,[{key:'title',label:'Titre'},{key:'date',label:'Date'},{key:'tag',label:'Étiquette'},{key:'excerpt',label:'Résumé',type:'area'},{key:'image',label:'Image',type:'image'}],'Ajouter un article',save));
   E.appendChild(c);
 
-  // Contact / Discord
-  c=sectionCard('Formulaire de contact','Le formulaire du site envoie chaque demande dans votre salon Discord via un webhook (embed).');
+  // Offres d'emploi
+  c=sectionCard('Offres d\'emploi','Chaque offre a un titre, une description et une photo. Les visiteurs postulent via le bouton « Postuler ».');
+  c.appendChild(listEditor(W.jobs,[{key:'title',label:'Intitulé du poste'},{key:'desc',label:'Description',type:'area'},{key:'image',label:'Photo',type:'image'}],'Ajouter une offre',save));
+  E.appendChild(c);
+
+  // Candidatures / Discord
+  c=sectionCard('Candidatures (Discord)','Chaque candidature envoyée depuis le site arrive dans votre salon Discord via un webhook (embed).');
   const wh=document.createElement('div');
   wh.innerHTML='<label class="lbl">URL du webhook Discord</label>';
   const whi=document.createElement('input'); whi.className='fld'; whi.placeholder='https://discord.com/api/webhooks/...'; whi.value=W.contact.discordWebhook||'';
