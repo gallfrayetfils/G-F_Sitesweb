@@ -25,10 +25,10 @@
   "contact": {
     "phone": "",
     "email": "",
-    "address": "Parc logistique du Pont de Normandie, 8 rue des Transporteurs · 76600 Le Havre",
+    "address": "",
     "mapLat": null,
     "mapLng": null,
-    "discordWebhook": "https://discord.com/api/webhooks/1520441991211647089/dF78MtooL6wZOA50Cx1kI7dd62-zD__uKHIM-0FAiJU-_ppyyYF7i-PSwikE4LDktSRc"
+    "discordWebhook": "https://discord.com/api/webhooks/1520468674853601382/DvZTMAqViu9skU5AJn-KsFDWDofeOh2IKI4oZng9KZr5z-A18cJy4-_UIxFK_yQ8TFXs"
   },
   "fleet": {
     "baseCity": "",
@@ -37,5 +37,11 @@
     "deliveries": [],
     "drivers": []
   },
-  "jobs": []
+  "jobs": [
+    {
+      "title": "Chauffeur routier SPL",
+      "desc": "Test",
+      "image": ""
+    }
+  ]
 }
