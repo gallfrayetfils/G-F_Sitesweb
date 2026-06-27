@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin — Gallfray &amp; Fils</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  body{font-family:'Inter',sans-serif;}
+  .dsp{font-family:'Space Grotesk',sans-serif;}
+  input,textarea,select{outline:none;}
+  .fld{width:100%;border-radius:.6rem;background:#fff;border:1px solid #d4d4d8;padding:.6rem .8rem;font-size:.9rem;}
+  .fld:focus{border-color:#3f3f46;box-shadow:0 0 0 3px rgba(63,63,70,.12);}
+  .lbl{font-size:.72rem;font-weight:600;color:#52525b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem;display:block;}
+  .card{background:#fff;border:1px solid #e4e4e7;border-radius:1rem;padding:1.25rem 1.25rem 1.4rem;box-shadow:0 8px 30px -16px rgba(0,0,0,.2);}
+  .btn{border-radius:.6rem;padding:.6rem 1rem;font-weight:600;font-size:.9rem;transition:.15s;}
+  .btn-dark{background:#18181b;color:#fff;} .btn-dark:hover{background:#000;}
+  .btn-ghost{background:#f4f4f5;color:#18181b;border:1px solid #e4e4e7;} .btn-ghost:hover{background:#e4e4e7;}
+  .row{display:grid;gap:.75rem;}
+  .chip{font-size:.7rem;background:#f4f4f5;border:1px solid #e4e4e7;border-radius:9999px;padding:.15rem .6rem;}
+</style>
+</head>
+<body class="bg-zinc-100 text-zinc-900">
+
+<!-- LOGIN -->
+<div id="login" class="min-h-screen grid place-items-center px-5">
+  <div class="card w-full max-w-sm">
+    <div class="text-center mb-6">
+      <div class="mx-auto w-12 h-12 grid place-items-center">
+        <svg viewBox="0 0 40 40" class="w-12 h-12"><defs><linearGradient id="c" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F4F4F5"/><stop offset=".5" stop-color="#A1A1AA"/><stop offset="1" stop-color="#52525B"/></linearGradient></defs><rect x="6" y="6" width="28" height="28" rx="4" transform="rotate(45 20 20)" fill="#18181B" stroke="url(#c)" stroke-width="1.5"/></svg>
+      </div>
+      <h1 class="dsp font-700 text-xl mt-3">Espace administrateur</h1>
+      <p class="text-zinc-500 text-sm mt-1">Gallfray &amp; Fils</p>
+    </div>
+    <label class="lbl">Code utilisateur</label>
+    <input id="u" class="fld mb-3" autocomplete="username" />
+    <label class="lbl">Mot de passe</label>
+    <input id="p" type="password" class="fld mb-4" autocomplete="current-password" />
+    <button id="login-btn" class="btn btn-dark w-full">Se connecter</button>
+    <p id="login-err" class="text-red-600 text-sm mt-3 hidden">Identifiants incorrects.</p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" class="hidden">
+  <header class="sticky top-0 z-20 bg-white/90 backdrop-blur border-b border-zinc-200">
+    <div class="max-w-5xl mx-auto px-5 py-3 flex items-center justify-between gap-3 flex-wrap">
+      <div class="flex items-center gap-2"><span class="dsp font-700">Administration</span><span class="chip">Gallfray &amp; Fils</span></div>
+      <div class="flex items-center gap-2">
+        <span id="auto-ind" class="text-xs text-emerald-600 mr-1"></span>
+        <button id="preview" class="btn btn-ghost">👁 Aperçu</button>
+        <button id="import" class="btn btn-ghost">⬆ Importer</button>
+        <input id="import-file" type="file" accept="application/json" class="hidden" />
+        <button id="save" class="btn btn-ghost">💾 Enregistrer</button>
+        <button id="export" class="btn btn-dark">⬇ Exporter data.json</button>
+        <button id="logout" class="btn btn-ghost">Quitter</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-5 py-8 space-y-6">
+    <p class="text-sm text-zinc-500 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
+      Vos modifications sont <b>enregistrées automatiquement</b> (brouillon dans ce navigateur) — aucun risque de perte. Pour <b>publier en ligne pour tous les visiteurs</b> : cliquez <b>Exporter data.json</b> et déposez le fichier sur GitHub (à côté de <code>index.html</code>).
+    </p>
+    <div id="editor" class="space-y-6"></div>
+  </main>
+</div>
+
+<script>
+/* ====== IDENTIFIANTS — À CHANGER ICI ====== */
+const AUTH = { user: "admin", pass: "gallfray76" };
+/* ========================================== */
+
+const DEFAULTS = {
+  brand:{name:"Gallfray & Fils",tagline:"transport · normandie",logoType:"text",logoImage:""},
+  hero:{coords:"N 49.5° · E 0.1° — Normandie, ports du Havre & de Rouen",title:"Votre partenaire transport de confiance",subtitle:"Des solutions logistiques fiables, efficaces et adaptées à vos besoins partout en Europe.",bgImage:"https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=2000&q=80"},
+  about:{eyebrow:"À propos · Maison de transport normande",title:"Un savoir-faire familial au service de votre supply chain",text:"Maison familiale née en Normandie...",image:"https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1400&q=80"},
+  stats:[{value:15,suffix:"+",label:"années d'expérience"},{value:250,suffix:"+",label:"clients satisfaits"},{value:30,suffix:"",label:"pays desservis"},{value:98,suffix:"%",label:"de livraisons dans les délais"}],
+  services:[{title:"Transport national",desc:"Lots complets et groupage..."},{title:"Transport international",desc:"Acheminements transfrontaliers..."},{title:"Logistique",desc:"Stockage, préparation de commandes..."},{title:"Livraison express",desc:"Solutions urgentes et dédiées..."},{title:"Gestion de flotte",desc:"Pilotage, maintenance..."},{title:"Solutions sur mesure",desc:"Schémas logistiques conçus avec vous..."}],
+  engagements:[{title:"Sécurité",desc:"Procédures strictes..."},{title:"Ponctualité",desc:"Des créneaux respectés..."},{title:"Fiabilité",desc:"Un engagement constant..."},{title:"Innovation",desc:"Télématique, suivi en temps réel..."},{title:"Développement durable",desc:"Optimisation des trajets..."}],
+  testimonials:[],
+  news:[],
+  contact:{phone:"+33 (0)2 35 00 00 00",email:"contact@gallfray-fils.fr",address:"Parc logistique du Pont de Normandie, 76600 Le Havre",mapLat:49.49,mapLng:0.11},
+  fleet:{baseCity:"Le Havre",baseLat:49.49,baseLng:0.11,
+    deliveries:[],
+    drivers:[]}
+};
+
+const CITIES = {"le havre":[49.49,0.11],"rouen":[49.4432,1.0993],"caen":[49.1829,-0.3707],"paris":[48.8566,2.3522],"lille":[50.6292,3.0573],"lyon":[45.764,4.8357],"marseille":[43.2965,5.3698],"bordeaux":[44.8378,-0.5792],"nantes":[47.2184,-1.5536],"strasbourg":[48.5734,7.7521],"reims":[49.2583,4.0317],"toulouse":[43.6047,1.4442],"nice":[43.7102,7.262],"brest":[48.3904,-4.4861],"calais":[50.9513,1.8587],"dijon":[47.322,5.0415],"bruxelles":[50.8503,4.3517],"anvers":[51.2194,4.4025],"amsterdam":[52.3676,4.9041],"rotterdam":[51.9244,4.4777],"cologne":[50.9375,6.9603],"berlin":[52.52,13.405],"hambourg":[53.5511,9.9937],"munich":[48.1351,11.582],"francfort":[50.1109,8.6821],"luxembourg":[49.6116,6.1319],"zurich":[47.3769,8.5417],"geneve":[46.2044,6.1432],"milan":[45.4642,9.19],"rome":[41.9028,12.4964],"turin":[45.0703,7.6869],"venise":[45.4408,12.3155],"madrid":[40.4168,-3.7038],"barcelone":[41.3851,2.1734],"valence":[39.4699,-0.3763],"lisbonne":[38.7223,-9.1393],"porto":[41.1579,-8.6291],"vienne":[48.2082,16.3738],"prague":[50.0755,14.4378],"varsovie":[52.2297,21.0122],"budapest":[47.4979,19.0402],"londres":[51.5074,-0.1278],"dublin":[53.3498,-6.2603],"copenhague":[55.6761,12.5683],"stockholm":[59.3293,18.0686],"oslo":[59.9139,10.7522]};
+
+let W; // working data
+const $=id=>document.getElementById(id);
+const clone=o=>JSON.parse(JSON.stringify(o));
+
+/* ---- Login ---- */
+function tryLogin(){
+  if($('u').value.trim()===AUTH.user && $('p').value===AUTH.pass){
+    sessionStorage.setItem('gf_admin','1'); start();
+  } else { $('login-err').classList.remove('hidden'); }
+}
+$('login-btn').addEventListener('click',tryLogin);
+$('p').addEventListener('keydown',e=>{if(e.key==='Enter')tryLogin();});
+
+async function start(){
+  $('login').classList.add('hidden'); $('app').classList.remove('hidden');
+  // charge: localStorage > data.json > defaults
+  let d=null;
+  try{ d=JSON.parse(localStorage.getItem('gf_site_data')); }catch(e){}
+  if(!d){ try{ const r=await fetch('data.json',{cache:'no-store'}); if(r.ok) d=await r.json(); }catch(e){} }
+  W = d||clone(DEFAULTS);
+  buildEditor();
+}
+if(sessionStorage.getItem('gf_admin')==='1') start();
+
+/* ---- Helpers de champ ---- */
+function field(label,val,on,type='text'){
+  const w=document.createElement('div');
+  w.innerHTML=`<label class="lbl">${label}</label>`;
+  const i=document.createElement(type==='area'?'textarea':'input'); i.className='fld';
+  if(type==='area'){i.rows=3;} else {i.type=type;}
+  i.value=val??''; i.addEventListener('input',()=>on(type==='number'?parseFloat(i.value):i.value));
+  w.appendChild(i); return w;
+}
+function resizeImage(file,maxW){return new Promise(res=>{const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{let{width:w,height:h}=img;if(w>maxW){h=h*maxW/w;w=maxW;}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);res(c.toDataURL('image/jpeg',0.82));};img.src=r.result;};r.readAsDataURL(file);});}
+function imageField(label,val,set){
+  const w=document.createElement('div');
+  w.innerHTML=`<label class="lbl">${label}</label>`;
+  const row=document.createElement('div'); row.className='flex gap-2 items-center';
+  const i=document.createElement('input'); i.className='fld'; i.placeholder='URL de l\'image ou téléversez →'; i.value=val||'';
+  i.addEventListener('input',()=>{set(i.value);prev.src=i.value;});
+  const up=document.createElement('label'); up.className='btn btn-ghost cursor-pointer whitespace-nowrap'; up.textContent='📁';
+  const fi=document.createElement('input'); fi.type='file'; fi.accept='image/*'; fi.className='hidden';
+  fi.addEventListener('change',async()=>{if(fi.files[0]){const d=await resizeImage(fi.files[0],1600);i.value=d;set(d);prev.src=d;}});
+  up.appendChild(fi);
+  row.append(i,up); w.appendChild(row);
+  const prev=document.createElement('img'); prev.src=val||''; prev.className='mt-2 h-20 rounded-lg object-cover border border-zinc-200'; prev.onerror=()=>prev.style.display='none'; prev.onload=()=>prev.style.display='';
+  w.appendChild(prev); return w;
+}
+function sectionCard(title,desc){const c=document.createElement('section');c.className='card';c.innerHTML=`<h2 class="dsp font-700 text-lg">${title}</h2>${desc?`<p class="text-sm text-zinc-500 mt-1 mb-4">${desc}</p>`:'<div class="mb-4"></div>'}`;return c;}
+function listEditor(arr,fields,addLabel,onChange){
+  const wrap=document.createElement('div'); wrap.className='space-y-3';
+  function draw(){
+    wrap.innerHTML='';
+    arr.forEach((item,idx)=>{
+      const box=document.createElement('div'); box.className='rounded-xl border border-zinc-200 p-3 bg-zinc-50';
+      const grid=document.createElement('div'); grid.className='grid sm:grid-cols-2 gap-3';
+      fields.forEach(f=>{
+        if(f.type==='image'){ grid.appendChild(imageField(f.label,item[f.key],v=>{item[f.key]=v;onChange();})); }
+        else if(f.type==='city'){
+          const cell=document.createElement('div');
+          cell.appendChild(field(f.label,item[f.key],v=>{item[f.key]=v;onChange();}));
+          const b=document.createElement('button'); b.className='btn btn-ghost mt-2 text-sm'; b.textContent='📍 Trouver les coordonnées';
+          b.addEventListener('click',()=>{const k=(item[f.key]||'').trim().toLowerCase();if(CITIES[k]){item.lat=CITIES[k][0];item.lng=CITIES[k][1];onChange();draw();}else{alert('Ville inconnue du répertoire. Saisissez lat/lng à la main.');}});
+          cell.appendChild(b); grid.appendChild(cell);
+        }
+        else { grid.appendChild(field(f.label,item[f.key],v=>{item[f.key]=v;onChange();},f.type||'text')); }
+      });
+      box.appendChild(grid);
+      const del=document.createElement('button'); del.className='btn btn-ghost mt-3 text-red-600 text-sm'; del.textContent='🗑 Supprimer';
+      del.addEventListener('click',()=>{arr.splice(idx,1);onChange();draw();});
+      box.appendChild(del); wrap.appendChild(box);
+    });
+    const add=document.createElement('button'); add.className='btn btn-dark text-sm'; add.textContent='＋ '+addLabel;
+    add.addEventListener('click',()=>{const o={};fields.forEach(f=>o[f.key]=f.def!==undefined?f.def:'');if(fields.some(f=>f.type==='city')){o.lat='';o.lng='';}arr.push(o);onChange();draw();});
+    wrap.appendChild(add);
+  }
+  draw(); return wrap;
+}
+
+/* ---- Construction de l'éditeur ---- */
+function buildEditor(){
+  const E=$('editor'); E.innerHTML='';
+  const save=autosave; // sauvegarde auto (ajout/suppression d'éléments)
+
+  // Identité
+  let c=sectionCard('Identité / Logo','Texte calligraphié par défaut, ou téléversez votre propre logo (PNG transparent conseillé).');
+  c.appendChild(rowGrid([
+    field('Nom de la marque',W.brand.name,v=>W.brand.name=v),
+    field('Sous-titre',W.brand.tagline,v=>W.brand.tagline=v),
+  ]));
+  const logoType=field('Type de logo','',()=>{}); // replaced by select
+  const sel=document.createElement('div'); sel.innerHTML='<label class="lbl">Type de logo</label>';
+  const s=document.createElement('select'); s.className='fld'; s.innerHTML='<option value="text">Texte calligraphié (par défaut)</option><option value="image">Image téléversée</option>'; s.value=W.brand.logoType;
+  s.addEventListener('change',()=>{W.brand.logoType=s.value;}); sel.appendChild(s);
+  c.appendChild(rowGrid([sel, imageField('Image du logo',W.brand.logoImage,v=>W.brand.logoImage=v)]));
+  E.appendChild(c);
+
+  // Accueil
+  c=sectionCard('Section Accueil (Hero)');
+  c.appendChild(rowGrid([
+    field('Coordonnées / bandeau',W.hero.coords,v=>W.hero.coords=v),
+    field('Titre',W.hero.title,v=>W.hero.title=v),
+  ]));
+  c.appendChild(field('Sous-titre',W.hero.subtitle,v=>W.hero.subtitle=v,'area'));
+  c.appendChild(imageField('Image de fond',W.hero.bgImage,v=>W.hero.bgImage=v));
+  E.appendChild(c);
+
+  // À propos
+  c=sectionCard('Section À propos');
+  c.appendChild(rowGrid([field('Sur-titre',W.about.eyebrow,v=>W.about.eyebrow=v),field('Titre',W.about.title,v=>W.about.title=v)]));
+  c.appendChild(field('Texte',W.about.text,v=>W.about.text=v,'area'));
+  c.appendChild(imageField('Image',W.about.image,v=>W.about.image=v));
+  E.appendChild(c);
+
+  // Stats
+  c=sectionCard('Chiffres clés');
+  c.appendChild(listEditor(W.stats,[{key:'value',label:'Valeur',type:'number',def:0},{key:'suffix',label:'Suffixe (+ % …)'},{key:'label',label:'Libellé'}],'Ajouter un chiffre',save));
+  E.appendChild(c);
+
+  // Services
+  c=sectionCard('Services');
+  c.appendChild(listEditor(W.services,[{key:'title',label:'Titre'},{key:'desc',label:'Description',type:'area'}],'Ajouter un service',save));
+  E.appendChild(c);
+
+  // Engagements
+  c=sectionCard('Engagements');
+  c.appendChild(listEditor(W.engagements,[{key:'title',label:'Titre'},{key:'desc',label:'Description',type:'area'}],'Ajouter un engagement',save));
+  E.appendChild(c);
+
+  // Témoignages
+  c=sectionCard('Témoignages');
+  c.appendChild(listEditor(W.testimonials,[{key:'name',label:'Nom'},{key:'initials',label:'Initiales'},{key:'role',label:'Fonction / société'},{key:'rating',label:'Note (1-5)',type:'number',def:5},{key:'text',label:'Avis',type:'area'}],'Ajouter un témoignage',save));
+  E.appendChild(c);
+
+  // Actualités
+  c=sectionCard('Actualités / Posts');
+  c.appendChild(listEditor(W.news,[{key:'title',label:'Titre'},{key:'date',label:'Date'},{key:'tag',label:'Étiquette'},{key:'excerpt',label:'Résumé',type:'area'},{key:'image',label:'Image',type:'image'}],'Ajouter un article',save));
+  E.appendChild(c);
+
+  // Contact
+  c=sectionCard('Contact');
+  c.appendChild(rowGrid([field('Téléphone',W.contact.phone,v=>W.contact.phone=v),field('Email',W.contact.email,v=>W.contact.email=v)]));
+  c.appendChild(field('Adresse',W.contact.address,v=>W.contact.address=v,'area'));
+  c.appendChild(rowGrid([field('Latitude (carte)',W.contact.mapLat,v=>W.contact.mapLat=v,'number'),field('Longitude (carte)',W.contact.mapLng,v=>W.contact.mapLng=v,'number')]));
+  E.appendChild(c);
+
+  // Flotte
+  c=sectionCard('Suivi de flotte (carte)','Tapez une ville puis « Trouver les coordonnées », ou saisissez lat/lng à la main.');
+  c.appendChild(rowGrid([field('Ville du siège',W.fleet.baseCity,v=>W.fleet.baseCity=v),field('Lat siège',W.fleet.baseLat,v=>W.fleet.baseLat=v,'number'),field('Lng siège',W.fleet.baseLng,v=>W.fleet.baseLng=v,'number')]));
+  const h1=document.createElement('h3'); h1.className='dsp font-600 mt-5 mb-2'; h1.textContent='Chauffeurs'; c.appendChild(h1);
+  c.appendChild(listEditor(W.fleet.drivers,[{key:'name',label:'Nom'},{key:'city',label:'Ville',type:'city'},{key:'status',label:'Statut (en route / disponible / pause)'},{key:'lat',label:'Latitude',type:'number'},{key:'lng',label:'Longitude',type:'number'}],'Ajouter un chauffeur',save));
+  const h2=document.createElement('h3'); h2.className='dsp font-600 mt-6 mb-2'; h2.textContent='Livraisons'; c.appendChild(h2);
+  c.appendChild(listEditor(W.fleet.deliveries,[{key:'city',label:'Ville',type:'city'},{key:'cargo',label:'Marchandise'},{key:'status',label:'Statut (livré / en cours / planifié)'},{key:'lat',label:'Latitude',type:'number'},{key:'lng',label:'Longitude',type:'number'}],'Ajouter une livraison',save));
+  E.appendChild(c);
+}
+function rowGrid(nodes){const g=document.createElement('div');g.className='grid sm:grid-cols-2 gap-3 mb-3';nodes.forEach(n=>g.appendChild(n));return g;}
+
+/* ---- Sauvegarde automatique (brouillon local) ---- */
+let _autoT;
+function autosave(){clearTimeout(_autoT);setInd('Enregistrement…','text-zinc-400');_autoT=setTimeout(()=>{localStorage.setItem('gf_site_data',JSON.stringify(W));setInd('✓ Brouillon enregistré','text-emerald-600');},500);}
+function setInd(t,cls){const i=$('auto-ind');if(i){i.textContent=t;i.className='text-xs mr-1 '+(cls||'text-emerald-600');}}
+document.addEventListener('DOMContentLoaded',()=>{});
+$('editor').addEventListener('input',autosave);
+$('editor').addEventListener('change',autosave);
+
+/* ---- Actions ---- */
+$('save').addEventListener('click',()=>{localStorage.setItem('gf_site_data',JSON.stringify(W));setInd('✓ Brouillon enregistré','text-emerald-600');flash('Enregistré (brouillon local) ✔');});
+$('preview').addEventListener('click',()=>{localStorage.setItem('gf_site_data',JSON.stringify(W));window.open('index.html?preview=1','_blank');});
+$('export').addEventListener('click',()=>{
+  localStorage.setItem('gf_site_data',JSON.stringify(W));
+  const blob=new Blob([JSON.stringify(W,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='data.json';a.click();
+  flash('data.json exporté — déposez-le sur GitHub pour publier.');
+});
+$('import').addEventListener('click',()=>$('import-file').click());
+$('import-file').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{W=JSON.parse(r.result);localStorage.setItem('gf_site_data',JSON.stringify(W));buildEditor();flash('Importé ✔');}catch(err){alert('Fichier JSON invalide.');}};r.readAsText(f);});
+$('logout').addEventListener('click',()=>{sessionStorage.removeItem('gf_admin');location.reload();});
+
+function flash(msg){const d=document.createElement('div');d.textContent=msg;d.className='fixed bottom-5 left-1/2 -translate-x-1/2 bg-zinc-900 text-white text-sm px-4 py-2 rounded-lg shadow-lg z-50';document.body.appendChild(d);setTimeout(()=>d.remove(),2600);}
+</script>
+</body>
+</html>
