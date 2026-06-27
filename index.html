@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gallfray &amp; Fils — Transport &amp; logistique en Europe</title>
+<meta name="description" content="Gallfray & Fils, transporteur routier normand. Transport national, international, logistique et suivi de flotte en temps réel partout en Europe." />
+<meta name="theme-color" content="#111113" />
+<meta property="og:title" content="Gallfray & Fils — Votre partenaire transport de confiance" />
+<meta property="og:description" content="Des solutions logistiques fiables, efficaces et adaptées à vos besoins partout en Europe." />
+<meta property="og:locale" content="fr_FR" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Great+Vibes&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: { extend: {
+      colors: { navy:'#111113', slate2:'#1C1C20', electric:'#3F3F46', sky2:'#D4D4D8', mist:'#F4F4F5' },
+      fontFamily: { display:['"Space Grotesk"','sans-serif'], body:['Inter','sans-serif'], script:['"Great Vibes"','cursive'] },
+      boxShadow: { soft:'0 10px 40px -12px rgba(0,0,0,0.18)', lift:'0 24px 60px -18px rgba(0,0,0,0.45)', glow:'0 0 0 1px rgba(255,255,255,0.12), 0 14px 40px -8px rgba(0,0,0,0.6)' },
+    } },
+  };
+</script>
+<style>
+  :root { scroll-behavior: smooth; }
+  body { font-family:'Inter',sans-serif; }
+  .font-display{font-family:'Space Grotesk',sans-serif;} .font-script{font-family:'Great Vibes',cursive;}
+  .chrome-rule{height:2px;background:linear-gradient(90deg,transparent,#A1A1AA,#F4F4F5,#A1A1AA,transparent);}
+  .eyebrow{font-family:'Space Grotesk',sans-serif;letter-spacing:.28em;text-transform:uppercase;font-size:.72rem;font-weight:600;}
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1);}
+  .reveal.in{opacity:1;transform:none;}
+  .glass{background:rgba(255,255,255,.06);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);border:1px solid rgba(255,255,255,.10);}
+  .glass-light{background:rgba(255,255,255,.65);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);border:1px solid rgba(255,255,255,.7);}
+  .btn-glow{position:relative;isolation:isolate;transition:transform .25s ease,box-shadow .25s ease;}
+  .btn-glow::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(120deg,#F4F4F5,#A1A1AA,#52525B);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .25s ease;}
+  .btn-glow:hover{transform:translateY(-2px);box-shadow:0 18px 44px -10px rgba(0,0,0,.55);}
+  .btn-glow:hover::before{opacity:1;}
+  .route-dash{stroke-dasharray:10 14;animation:routeMove 2.6s linear infinite;} @keyframes routeMove{to{stroke-dashoffset:-48;}}
+  .route-draw{stroke-dasharray:1400;stroke-dashoffset:1400;animation:routeDraw 3.2s ease forwards .3s;} @keyframes routeDraw{to{stroke-dashoffset:0;}}
+  .grad-text{background:linear-gradient(100deg,#FFFFFF,#D4D4D8,#A1A1AA);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .card-hover{transition:transform .4s cubic-bezier(.16,1,.3,1),box-shadow .4s ease,border-color .4s ease;}
+  .card-hover:hover{transform:translateY(-8px);}
+  .nav-link{position:relative;} .nav-link::after{content:'';position:absolute;left:0;bottom:-4px;height:2px;width:0;background:linear-gradient(90deg,#D4D4D8,#52525B);transition:width .3s ease;} .nav-link:hover::after{width:100%;}
+  .marquee-track{animation:marquee 32s linear infinite;} @keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+  a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #A1A1AA;outline-offset:2px;border-radius:6px;}
+  /* Leaflet dark */
+  #fleet-map{height:480px;border-radius:1rem;z-index:0;background:#0A0A0B;}
+  .leaflet-popup-content-wrapper{background:#18181B;color:#fff;border-radius:12px;border:1px solid rgba(255,255,255,.12);}
+  .leaflet-popup-tip{background:#18181B;}
+  .leaflet-container{font-family:'Inter',sans-serif;}
+  .pulse-dot{position:relative;}
+  .pulse-dot::after{content:'';position:absolute;inset:-6px;border-radius:9999px;border:2px solid rgba(255,255,255,.5);animation:pulse 1.8s ease-out infinite;}
+  @keyframes pulse{0%{transform:scale(.6);opacity:.8;}100%{transform:scale(1.6);opacity:0;}}
+  @media (prefers-reduced-motion:reduce){.reveal{opacity:1!important;transform:none!important;transition:none!important;}.route-dash,.route-draw,.marquee-track,.pulse-dot::after{animation:none!important;}:root{scroll-behavior:auto;}}
+</style>
+</head>
+
+<body class="bg-mist text-navy antialiased font-body selection:bg-zinc-300/40">
+
+<!-- NAVBAR -->
+<header id="navbar" class="fixed top-0 inset-x-0 z-50 transition-all duration-500">
+  <div class="mx-auto max-w-7xl px-5 lg:px-8">
+    <nav class="flex items-center justify-between h-[72px]">
+      <a href="#accueil" id="brand-link" class="flex items-center gap-3 group" aria-label="Gallfray & Fils, accueil"></a>
+      <ul id="nav-links" class="hidden lg:flex items-center gap-8 text-sm font-500 text-white/80 transition-colors">
+        <li><a href="#apropos" class="nav-link hover:text-white">À propos</a></li>
+        <li><a href="#services" class="nav-link hover:text-white">Services</a></li>
+        <li><a href="#flotte" class="nav-link hover:text-white">Suivi de flotte</a></li>
+        <li><a href="#actualites" class="nav-link hover:text-white">Actualités</a></li>
+        <li><a href="admin.html" class="nav-link hover:text-white inline-flex items-center gap-1.5"><svg viewBox="0 0 24 24" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>Admin</a></li>
+      </ul>
+      <div class="hidden lg:block">
+        <a href="#contact" class="btn-glow inline-flex items-center gap-2 rounded-xl bg-electric px-5 py-2.5 text-sm font-600 text-white shadow-glow">Nous contacter</a>
+      </div>
+      <button id="menu-btn" class="lg:hidden grid place-items-center w-11 h-11 rounded-xl glass text-white" aria-label="Menu" aria-expanded="false">
+        <svg id="icon-open" viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        <svg id="icon-close" viewBox="0 0 24 24" class="w-6 h-6 hidden" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </nav>
+  </div>
+  <div id="mobile-menu" class="lg:hidden fixed inset-x-0 top-[72px] origin-top scale-y-0 opacity-0 transition-all duration-300 ease-out">
+    <div class="mx-4 rounded-2xl bg-navy/95 backdrop-blur-xl border border-white/10 shadow-2xl p-6">
+      <ul class="flex flex-col gap-1 text-white/90 font-500">
+        <li><a class="mobile-link block rounded-xl px-4 py-3.5 hover:bg-white/5" href="#apropos">À propos</a></li>
+        <li><a class="mobile-link block rounded-xl px-4 py-3.5 hover:bg-white/5" href="#services">Services</a></li>
+        <li><a class="mobile-link block rounded-xl px-4 py-3.5 hover:bg-white/5" href="#flotte">Suivi de flotte</a></li>
+        <li><a class="mobile-link block rounded-xl px-4 py-3.5 hover:bg-white/5" href="#temoignages">Témoignages</a></li>
+        <li><a class="mobile-link block rounded-xl px-4 py-3.5 hover:bg-white/5" href="#actualites">Actualités</a></li>
+        <li><a class="mobile-link flex items-center gap-2 rounded-xl px-4 py-3.5 hover:bg-white/5" href="admin.html"><svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>Espace admin</a></li>
+      </ul>
+      <a href="#contact" class="mobile-link mt-4 btn-glow flex items-center justify-center gap-2 rounded-xl bg-electric px-5 py-3.5 font-600 text-white shadow-glow">Nous contacter</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section id="accueil" class="relative min-h-screen flex items-center overflow-hidden bg-navy">
+  <div class="absolute inset-0">
+    <img id="hero-bg" alt="Transport routier" class="w-full h-full object-cover opacity-40" />
+    <div class="absolute inset-0 bg-gradient-to-r from-navy via-navy/85 to-navy/40"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-navy via-transparent to-navy/60"></div>
+  </div>
+  <svg class="absolute right-0 top-1/4 w-[60%] h-[60%] hidden md:block pointer-events-none opacity-60" viewBox="0 0 600 400" fill="none" aria-hidden="true">
+    <path class="route-draw" d="M20 360 C 160 320, 120 180, 260 160 S 460 120, 560 40" stroke="#52525B" stroke-width="2.5" stroke-linecap="round"/>
+    <path class="route-dash" d="M20 360 C 160 320, 120 180, 260 160 S 460 120, 560 40" stroke="#D4D4D8" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="20" cy="360" r="6" fill="#D4D4D8"/><circle cx="560" cy="40" r="6" fill="#fff"/><circle cx="560" cy="40" r="12" fill="none" stroke="#D4D4D8" stroke-width="1.5" opacity="0.5"/>
+  </svg>
+  <div class="relative z-10 mx-auto max-w-7xl px-5 lg:px-8 w-full pt-28 pb-20">
+    <div class="max-w-2xl">
+      <div class="reveal in inline-flex items-center gap-2 rounded-full glass px-4 py-2 text-white/80 mb-7">
+        <span class="w-2 h-2 rounded-full bg-sky2 animate-pulse"></span>
+        <span id="hero-coords" class="eyebrow text-[0.62rem]"></span>
+      </div>
+      <p id="hero-brand" class="reveal in font-script text-white text-5xl sm:text-6xl lg:text-7xl leading-none mb-3"></p>
+      <div class="reveal in chrome-rule w-56 max-w-full mb-6"></div>
+      <h1 id="hero-title" class="reveal in font-display font-700 text-white text-3xl sm:text-4xl lg:text-[2.9rem] leading-[1.08] tracking-tight"></h1>
+      <p id="hero-sub" class="reveal in mt-6 text-lg text-white/70 max-w-xl leading-relaxed"></p>
+      <div class="reveal in mt-9 flex flex-col sm:flex-row gap-4">
+        <a href="#services" class="btn-glow inline-flex items-center justify-center gap-2 rounded-xl bg-electric px-7 py-4 font-600 text-white shadow-glow">Découvrir nos services
+          <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a href="#contact" class="inline-flex items-center justify-center gap-2 rounded-xl glass px-7 py-4 font-600 text-white hover:bg-white/10 transition-colors">Nous contacter</a>
+      </div>
+      <div class="reveal in mt-14 flex flex-wrap items-center gap-x-8 gap-y-4 text-white/60">
+        <div class="flex items-center gap-2.5"><svg viewBox="0 0 24 24" class="w-5 h-5 text-sky2" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg><span class="text-sm">Flotte certifiée Euro 6</span></div>
+        <div class="flex items-center gap-2.5"><svg viewBox="0 0 24 24" class="w-5 h-5 text-sky2" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/></svg><span class="text-sm">Marchandises assurées</span></div>
+        <div class="flex items-center gap-2.5"><svg viewBox="0 0 24 24" class="w-5 h-5 text-sky2" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span class="text-sm">Suivi 24/7</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="absolute bottom-0 inset-x-0 border-t border-white/10 bg-navy/40 backdrop-blur-sm overflow-hidden">
+    <div id="marquee" class="flex marquee-track whitespace-nowrap py-3 text-white/40 eyebrow text-[0.62rem]"></div>
+  </div>
+</section>
+
+<!-- À PROPOS -->
+<section id="apropos" class="relative py-24 lg:py-32 bg-mist">
+  <div class="mx-auto max-w-7xl px-5 lg:px-8">
+    <div class="grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
+      <div class="reveal relative">
+        <div class="relative rounded-3xl overflow-hidden shadow-soft">
+          <img id="about-img" alt="Activité logistique" class="w-full h-[460px] object-cover" loading="lazy" />
+          <div class="absolute inset-0 bg-gradient-to-t from-navy/40 to-transparent"></div>
+        </div>
+        <div class="absolute -bottom-8 -right-4 sm:right-8 glass-light rounded-2xl shadow-lift p-6 w-56">
+          <div class="font-display font-700 text-4xl text-electric">98%</div>
+          <p class="text-sm text-navy/60 mt-1">de livraisons effectuées dans les délais annoncés</p>
+        </div>
+        <div class="absolute -top-6 -left-4 sm:-left-6 grid place-items-center w-20 h-20 rounded-2xl bg-navy text-white shadow-lift">
+          <span class="font-display font-700 text-2xl">15</span><span class="eyebrow text-[0.5rem] text-sky2">ans</span>
+        </div>
+      </div>
+      <div class="reveal">
+        <p id="about-eyebrow" class="eyebrow text-electric"></p>
+        <h2 id="about-title" class="mt-4 font-display font-700 text-3xl lg:text-[2.6rem] leading-tight tracking-tight"></h2>
+        <p id="about-text" class="mt-6 text-navy/60 leading-relaxed text-lg"></p>
+        <a href="#contact" class="mt-10 inline-flex items-center gap-2 font-600 text-electric group">Travailler avec nous
+          <svg viewBox="0 0 24 24" class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services" class="relative py-24 lg:py-32 bg-navy overflow-hidden">
+  <div class="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-white/10 blur-[120px]"></div>
+  <div class="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-zinc-400/10 blur-[120px]"></div>
+  <div class="relative mx-auto max-w-7xl px-5 lg:px-8">
+    <div class="max-w-2xl reveal">
+      <p class="eyebrow text-sky2">Nos services</p>
+      <h2 class="mt-4 font-display font-700 text-white text-3xl lg:text-[2.6rem] leading-tight tracking-tight">Une offre complète, du premier au dernier kilomètre</h2>
+      <p class="mt-5 text-white/60 text-lg leading-relaxed">Nous concevons des prestations modulaires qui s'adaptent à votre activité, vos volumes et vos contraintes.</p>
+    </div>
+    <div id="services-grid" class="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+  </div>
+</section>
+
+<!-- CHIFFRES -->
+<section id="chiffres" class="relative py-24 lg:py-28 bg-electric overflow-hidden">
+  <div class="absolute inset-0 opacity-10" style="background-image:radial-gradient(circle at 1px 1px, white 1px, transparent 0);background-size:32px 32px;"></div>
+  <div class="relative mx-auto max-w-7xl px-5 lg:px-8">
+    <div class="reveal text-center max-w-2xl mx-auto">
+      <p class="eyebrow text-white/70">Chiffres clés</p>
+      <h2 class="mt-3 font-display font-700 text-white text-3xl lg:text-[2.4rem] tracking-tight">La performance, en toute transparence</h2>
+    </div>
+    <div id="stats-grid" class="mt-14 grid grid-cols-2 lg:grid-cols-4 gap-6"></div>
+  </div>
+</section>
+
+<!-- ENGAGEMENTS -->
+<section id="engagements" class="relative py-24 lg:py-32 bg-mist">
+  <div class="mx-auto max-w-7xl px-5 lg:px-8">
+    <div class="reveal max-w-2xl">
+      <p class="eyebrow text-electric">Nos engagements</p>
+      <h2 class="mt-4 font-display font-700 text-3xl lg:text-[2.6rem] leading-tight tracking-tight">Les promesses qui guident chacune de nos tournées</h2>
+    </div>
+    <div id="engagements-grid" class="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+  </div>
+</section>
+
+<!-- FLOTTE / CARTE -->
+<section id="flotte" class="relative py-24 lg:py-32 bg-navy overflow-hidden">
+  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-white/10 blur-[120px] rounded-full"></div>
+  <div class="relative mx-auto max-w-7xl px-5 lg:px-8">
+    <div class="reveal flex flex-wrap items-end justify-between gap-6">
+      <div class="max-w-xl">
+        <p class="eyebrow text-sky2">Suivi de flotte · En direct</p>
+        <h2 class="mt-4 font-display font-700 text-white text-3xl lg:text-[2.6rem] leading-tight tracking-tight">Nos livraisons à travers l'Europe</h2>
+        <p class="mt-5 text-white/60 text-lg leading-relaxed">Visualisez en temps réel la position de nos conducteurs et l'avancement des livraisons sur le réseau européen.</p>
+      </div>
+      <div class="flex flex-wrap gap-4 text-sm text-white/70">
+        <span class="inline-flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-white"></span>Chauffeur</span>
+        <span class="inline-flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-zinc-400"></span>Livraison</span>
+        <span class="inline-flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-zinc-600 ring-2 ring-white/30"></span>Siège</span>
+      </div>
+    </div>
+    <div class="reveal mt-10 grid lg:grid-cols-[1fr_320px] gap-6">
+      <div id="fleet-map" class="shadow-lift border border-white/10"></div>
+      <div class="space-y-3 max-h-[480px] overflow-auto pr-1">
+        <div id="fleet-list"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TÉMOIGNAGES -->
+<section id="temoignages" class="relative py-24 lg:py-32 bg-mist">
+  <div class="mx-auto max-w-7xl px-5 lg:px-8">
+    <div class="reveal max-w-2xl">
+      <p class="eyebrow text-electric">Témoignages</p>
+      <h2 class="mt-4 font-display font-700 text-3xl lg:text-[2.6rem] leading-tight tracking-tight">Ils nous confient leurs flux</h2>
+    </div>
+    <div id="testimonials-grid" class="mt-14 grid md:grid-cols-3 gap-6"></div>
+  </div>
+</section>
+
+<!-- ACTUALITÉS -->
+<section id="actualites" class="relative py-24 lg:py-32 bg-navy">
+  <div class="mx-auto max-w-7xl px-5 lg:px-8">
+    <div class="reveal max-w-xl">
+      <p class="eyebrow text-sky2">Actualités</p>
+      <h2 class="mt-4 font-display font-700 text-white text-3xl lg:text-[2.6rem] leading-tight tracking-tight">Le transport en mouvement</h2>
+    </div>
+    <div id="news-grid" class="mt-12 grid md:grid-cols-3 gap-7"></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="relative py-24 lg:py-32 bg-mist overflow-hidden">
+  <div class="relative mx-auto max-w-7xl px-5 lg:px-8">
+    <div class="grid lg:grid-cols-2 gap-12">
+      <div class="reveal">
+        <p class="eyebrow text-electric">Contact</p>
+        <h2 class="mt-4 font-display font-700 text-3xl lg:text-[2.6rem] leading-tight tracking-tight">Parlons de votre prochain transport</h2>
+        <p class="mt-5 text-navy/60 text-lg leading-relaxed">Un projet, un devis, une question ? Notre équipe vous répond sous 24 heures ouvrées.</p>
+        <div class="mt-9 space-y-4">
+          <a id="c-phone" class="flex items-center gap-4 bg-white rounded-xl p-4 shadow-soft border border-navy/5 hover:shadow-lift transition group">
+            <span class="grid place-items-center w-12 h-12 rounded-xl bg-electric/10 text-electric"><svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h4l2 5-3 2a12 12 0 005 5l2-3 5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"/></svg></span>
+            <span><span class="block eyebrow text-[0.55rem] text-navy/40">Téléphone</span><span id="c-phone-t" class="block font-600 group-hover:text-electric transition"></span></span>
+          </a>
+          <a id="c-mail" class="flex items-center gap-4 bg-white rounded-xl p-4 shadow-soft border border-navy/5 hover:shadow-lift transition group">
+            <span class="grid place-items-center w-12 h-12 rounded-xl bg-electric/10 text-electric"><svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span>
+            <span><span class="block eyebrow text-[0.55rem] text-navy/40">Email</span><span id="c-mail-t" class="block font-600 group-hover:text-electric transition"></span></span>
+          </a>
+          <div class="flex items-center gap-4 bg-white rounded-xl p-4 shadow-soft border border-navy/5">
+            <span class="grid place-items-center w-12 h-12 rounded-xl bg-electric/10 text-electric"><svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4.5 8-12a8 8 0 10-16 0c0 7.5 8 12 8 12z"/><circle cx="12" cy="10" r="3"/></svg></span>
+            <span><span class="block eyebrow text-[0.55rem] text-navy/40">Adresse</span><span id="c-addr" class="block font-600"></span></span>
+          </div>
+        </div>
+        <div class="mt-6 rounded-2xl overflow-hidden border border-navy/10 shadow-soft"><iframe id="c-map" title="Localisation" class="w-full h-64" loading="lazy"></iframe></div>
+      </div>
+      <div class="reveal">
+        <form id="contact-form" class="bg-white rounded-3xl p-7 lg:p-9 shadow-soft border border-navy/5" novalidate>
+          <h3 class="font-display font-600 text-xl">Demande de devis</h3>
+          <p class="mt-1 text-navy/50 text-sm">Les champs marqués d'un * sont requis.</p>
+          <div class="mt-6 grid sm:grid-cols-2 gap-4">
+            <div><label for="nom" class="block text-navy/70 text-sm mb-2">Nom complet *</label><input id="nom" type="text" required class="w-full rounded-xl bg-mist border border-navy/10 px-4 py-3 focus:border-electric transition" placeholder="Jean Dupont" /></div>
+            <div><label for="ent" class="block text-navy/70 text-sm mb-2">Entreprise</label><input id="ent" type="text" class="w-full rounded-xl bg-mist border border-navy/10 px-4 py-3 focus:border-electric transition" placeholder="Votre société" /></div>
+            <div><label for="email" class="block text-navy/70 text-sm mb-2">Email *</label><input id="email" type="email" required class="w-full rounded-xl bg-mist border border-navy/10 px-4 py-3 focus:border-electric transition" placeholder="jean@entreprise.fr" /></div>
+            <div><label for="tel" class="block text-navy/70 text-sm mb-2">Téléphone</label><input id="tel" type="tel" class="w-full rounded-xl bg-mist border border-navy/10 px-4 py-3 focus:border-electric transition" placeholder="06 00 00 00 00" /></div>
+          </div>
+          <div class="mt-4"><label for="msg" class="block text-navy/70 text-sm mb-2">Votre message *</label><textarea id="msg" rows="4" required class="w-full rounded-xl bg-mist border border-navy/10 px-4 py-3 focus:border-electric transition resize-none" placeholder="Décrivez votre besoin, vos volumes, vos destinations…"></textarea></div>
+          <button type="submit" class="btn-glow mt-6 w-full flex items-center justify-center gap-2 rounded-xl bg-navy px-6 py-4 font-600 text-white shadow-glow">Envoyer ma demande
+            <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg></button>
+          <p id="form-status" class="mt-4 text-sm hidden" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-[#0A0A0B] text-white/70">
+  <div class="mx-auto max-w-7xl px-5 lg:px-8 py-16">
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
+      <div class="md:col-span-2">
+        <div id="footer-brand" class="flex items-center gap-3"></div>
+        <p class="mt-5 max-w-sm text-sm leading-relaxed">Transporteur routier de marchandises basé en Normandie. Des solutions logistiques fiables et durables au service des entreprises, partout en Europe.</p>
+      </div>
+      <div>
+        <h3 class="eyebrow text-white/40 text-[0.6rem]">Entreprise</h3>
+        <ul class="mt-5 space-y-3 text-sm">
+          <li><a href="#apropos" class="hover:text-sky2 transition">À propos</a></li>
+          <li><a href="#services" class="hover:text-sky2 transition">Services</a></li>
+          <li><a href="#flotte" class="hover:text-sky2 transition">Suivi de flotte</a></li>
+          <li><a href="#actualites" class="hover:text-sky2 transition">Actualités</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="eyebrow text-white/40 text-[0.6rem]">Contact</h3>
+        <ul id="footer-contact" class="mt-5 space-y-3 text-sm"></ul>
+      </div>
+    </div>
+    <div class="mt-12 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/40">
+      <p>© 2026 Gallfray &amp; Fils. Tous droits réservés.</p>
+      <div class="flex gap-6"><a href="#" class="hover:text-white/70">Mentions légales</a><a href="#" class="hover:text-white/70">Confidentialité</a></div>
+    </div>
+  </div>
+</footer>
+
+<button id="to-top" class="fixed bottom-6 right-6 z-40 grid place-items-center w-12 h-12 rounded-full bg-electric text-white shadow-glow opacity-0 translate-y-4 pointer-events-none transition-all duration-300" aria-label="Haut de page">
+  <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+/* ===== Données par défaut (utilisées hors-ligne ou si data.json absent) ===== */
+const DEFAULTS = {
+  brand:{name:"Gallfray & Fils",tagline:"transport · normandie",logoType:"text",logoImage:""},
+  hero:{coords:"N 49.5° · E 0.1° — Normandie, ports du Havre & de Rouen",title:"Votre partenaire transport de confiance",subtitle:"Des solutions logistiques fiables, efficaces et adaptées à vos besoins partout en Europe.",bgImage:"https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=2000&q=80"},
+  about:{eyebrow:"À propos · Maison de transport normande",title:"Un savoir-faire familial au service de votre supply chain",text:"Maison familiale née en Normandie, Gallfray & Fils s'est imposée comme un acteur de référence du transport routier de marchandises. Notre métier : acheminer vos flux avec rigueur, transparence et la régularité qui fait notre réputation, des ports du Havre et de Rouen jusqu'aux grands corridors européens.",image:"https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1400&q=80"},
+  stats:[{value:15,suffix:"+",label:"années d'expérience"},{value:250,suffix:"+",label:"clients satisfaits"},{value:30,suffix:"",label:"pays desservis"},{value:98,suffix:"%",label:"de livraisons dans les délais"}],
+  services:[{title:"Transport national",desc:"Lots complets et groupage sur l'ensemble du territoire, avec des plans de transport optimisés."},{title:"Transport international",desc:"Acheminements transfrontaliers maîtrisés, gestion documentaire et douanière comprises."},{title:"Logistique",desc:"Stockage, préparation de commandes et gestion des stocks au sein de nos plateformes."},{title:"Livraison express",desc:"Solutions urgentes et dédiées, avec affrètement réactif et créneaux garantis."},{title:"Gestion de flotte",desc:"Pilotage, maintenance et télématique embarquée pour une disponibilité maximale."},{title:"Solutions sur mesure",desc:"Schémas logistiques conçus avec vous, pour vos flux spécifiques et saisonniers."}],
+  engagements:[{title:"Sécurité",desc:"Procédures strictes, conducteurs formés et marchandises protégées à chaque étape."},{title:"Ponctualité",desc:"Des créneaux respectés et une information proactive en cas d'aléa."},{title:"Fiabilité",desc:"Un engagement constant, mesuré par des indicateurs partagés."},{title:"Innovation",desc:"Télématique, planification intelligente et suivi en temps réel."},{title:"Développement durable",desc:"Optimisation des trajets, motorisations propres et réduction de l'empreinte carbone."}],
+  testimonials:[],
+  news:[],
+  contact:{phone:"+33 (0)2 35 00 00 00",email:"contact@gallfray-fils.fr",address:"Parc logistique du Pont de Normandie, 8 rue des Transporteurs · 76600 Le Havre",mapLat:49.49,mapLng:0.11},
+  fleet:{baseCity:"Le Havre",baseLat:49.49,baseLng:0.11,
+    deliveries:[],
+    drivers:[]}
+};
+
+const esc = s => String(s==null?"":s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const SVCICON = ['<path d="M3 7h11v8H3zM14 10h4l3 3v2h-7z"/><circle cx="7" cy="17" r="1.6"/><circle cx="17" cy="17" r="1.6"/>','<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/>','<path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7M12 11v10"/>','<path d="M13 2L3 14h7l-1 8 10-12h-7z"/>','<rect x="3" y="6" width="13" height="9" rx="1"/><path d="M16 9h3l2 3v3h-5z"/><circle cx="7.5" cy="17" r="1.5"/><circle cx="17.5" cy="17" r="1.5"/>','<circle cx="12" cy="12" r="3.5"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/>'];
+
+function brandMarkup(b, dark){
+  if(b.logoType==='image' && b.logoImage){
+    return `<img src="${esc(b.logoImage)}" alt="${esc(b.name)}" class="h-10 w-auto object-contain" />`;
+  }
+  return `<svg viewBox="0 0 40 40" class="w-10 h-10 shrink-0" aria-hidden="true"><defs><linearGradient id="chr${dark?'D':'L'}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F4F4F5"/><stop offset=".5" stop-color="#A1A1AA"/><stop offset="1" stop-color="#52525B"/></linearGradient></defs><rect x="6" y="6" width="28" height="28" rx="4" transform="rotate(45 20 20)" fill="#18181B" stroke="url(#chr${dark?'D':'L'})" stroke-width="1.5"/><text x="20" y="24.5" text-anchor="middle" font-family="Great Vibes, cursive" font-size="15" fill="url(#chr${dark?'D':'L'})">GF</text></svg>
+  <span class="leading-none"><span class="brand-name font-script text-3xl">${esc(b.name)}</span><span class="block eyebrow text-[0.5rem] opacity-50 -mt-0.5">${esc(b.tagline)}</span></span>`;
+}
+
+let MAP, fleetData;
+function render(D){
+  fleetData = D.fleet;
+  // Brand (navbar)
+  const bl = document.getElementById('brand-link');
+  bl.innerHTML = brandMarkup(D.brand,true);
+  bl.querySelectorAll('.brand-name').forEach(e=>e.classList.add('text-white'));
+  // Footer brand
+  const fb = document.getElementById('footer-brand');
+  fb.innerHTML = brandMarkup(D.brand,true);
+  fb.querySelectorAll('.brand-name').forEach(e=>e.classList.add('text-white'));
+  // Hero
+  document.getElementById('hero-bg').src = D.hero.bgImage;
+  document.getElementById('hero-coords').textContent = D.hero.coords;
+  document.getElementById('hero-brand').textContent = D.brand.name;
+  document.getElementById('hero-title').innerHTML = esc(D.hero.title).replace(/(partenaire transport)/i,'<span class="grad-text">$1</span>');
+  document.getElementById('hero-sub').textContent = D.hero.subtitle;
+  // Marquee
+  const cities = [D.fleet.baseCity,'Rouen','Caen','Paris','Lille','Bruxelles','Rotterdam','Cologne','Milan','Barcelone'];
+  const seg = cities.map(c=>`<span class="px-8">${esc(c)}</span><span class="text-sky2">·</span>`).join('');
+  document.getElementById('marquee').innerHTML = `<span class="flex">${seg}</span><span class="flex" aria-hidden="true">${seg}</span>`;
+  // About
+  document.getElementById('about-img').src = D.about.image;
+  document.getElementById('about-eyebrow').textContent = D.about.eyebrow;
+  document.getElementById('about-title').textContent = D.about.title;
+  document.getElementById('about-text').textContent = D.about.text;
+  // Services
+  document.getElementById('services-grid').innerHTML = D.services.map((s,i)=>`
+    <article class="reveal card-hover glass rounded-2xl p-7 hover:bg-white/[0.09] hover:shadow-lift">
+      <div class="flex items-center justify-between"><div class="grid place-items-center w-14 h-14 rounded-xl bg-gradient-to-br from-electric to-sky2 text-white shadow-lift"><svg viewBox="0 0 24 24" class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${SVCICON[i%SVCICON.length]}</svg></div><span class="eyebrow text-white/30 text-[0.6rem]">${String(i+1).padStart(2,'0')}</span></div>
+      <h3 class="mt-6 font-display font-600 text-xl text-white">${esc(s.title)}</h3>
+      <p class="mt-3 text-white/55 text-sm leading-relaxed">${esc(s.desc)}</p></article>`).join('');
+  // Stats
+  document.getElementById('stats-grid').innerHTML = D.stats.map(s=>`
+    <div class="reveal text-center"><div class="font-display font-700 text-white text-5xl lg:text-6xl tracking-tight"><span class="counter" data-target="${s.value}">0</span><span>${esc(s.suffix)}</span></div><p class="mt-2 text-white/80 text-sm">${esc(s.label)}</p></div>`).join('');
+  // Engagements
+  document.getElementById('engagements-grid').innerHTML = D.engagements.map(e=>`
+    <div class="reveal card-hover rounded-2xl bg-white p-6 shadow-soft border border-navy/5 hover:shadow-lift hover:border-electric/30">
+      <div class="grid place-items-center w-12 h-12 rounded-xl bg-electric/10 text-electric"><svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+      <h3 class="mt-5 font-display font-600 text-lg">${esc(e.title)}</h3><p class="mt-2 text-sm text-navy/55 leading-relaxed">${esc(e.desc)}</p></div>`).join('');
+  // Testimonials
+  document.getElementById('testimonials-grid').innerHTML = D.testimonials.map(t=>`
+    <figure class="reveal rounded-2xl bg-white p-7 shadow-soft border border-navy/5"><div class="text-electric">${'★'.repeat(Math.max(0,Math.min(5,t.rating||5)))}</div>
+      <blockquote class="mt-5 text-navy/70 leading-relaxed">« ${esc(t.text)} »</blockquote>
+      <figcaption class="mt-6 flex items-center gap-3"><span class="grid place-items-center w-11 h-11 rounded-full bg-gradient-to-br from-electric to-sky2 text-white font-600">${esc(t.initials)}</span><span><span class="block font-600 text-sm">${esc(t.name)}</span><span class="block text-navy/50 text-xs">${esc(t.role)}</span></span></figcaption></figure>`).join('');
+  // News
+  document.getElementById('news-grid').innerHTML = D.news.map(n=>`
+    <article class="reveal card-hover group rounded-2xl bg-slate2 overflow-hidden border border-white/10 hover:shadow-lift">
+      <div class="relative h-52 overflow-hidden"><img src="${esc(n.image)}" alt="${esc(n.title)}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" /><span class="absolute top-4 left-4 rounded-full bg-black/60 backdrop-blur px-3 py-1 text-xs font-500 text-white">${esc(n.tag)}</span></div>
+      <div class="p-6"><time class="eyebrow text-white/40 text-[0.6rem]">${esc(n.date)}</time><h3 class="mt-3 font-display font-600 text-lg leading-snug text-white">${esc(n.title)}</h3><p class="mt-3 text-sm text-white/55 leading-relaxed">${esc(n.excerpt)}</p></div></article>`).join('');
+  // Contact
+  document.getElementById('c-phone').href = 'tel:'+D.contact.phone.replace(/[^+\d]/g,'');
+  document.getElementById('c-phone-t').textContent = D.contact.phone;
+  document.getElementById('c-mail').href = 'mailto:'+D.contact.email;
+  document.getElementById('c-mail-t').textContent = D.contact.email;
+  document.getElementById('c-addr').textContent = D.contact.address;
+  const la=D.contact.mapLat, ln=D.contact.mapLng, d=0.07;
+  document.getElementById('c-map').src = `https://www.openstreetmap.org/export/embed.html?bbox=${ln-d}%2C${la-0.03}%2C${ln+d}%2C${la+0.03}&layer=mapnik&marker=${la}%2C${ln}`;
+  // Footer contact
+  document.getElementById('footer-contact').innerHTML = `<li>${esc(D.contact.phone)}</li><li>${esc(D.contact.email)}</li><li class="leading-relaxed">${esc(D.contact.address)}</li>`;
+
+  // Masquage des sections vides
+  const toggleSec=(secId,href,show)=>{const s=document.getElementById(secId);if(s)s.style.display=show?'':'none';document.querySelectorAll(`a[href="#${href}"]`).forEach(a=>{const li=a.closest('li');if(li)li.style.display=show?'':'none';});};
+  toggleSec('temoignages','temoignages',(D.testimonials||[]).length>0);
+  toggleSec('actualites','actualites',(D.news||[]).length>0);
+
+  observeReveal(); runCounters(); initFleetMap();
+}
+
+/* ===== Carte de flotte ===== */
+function initFleetMap(){
+  if(!fleetData) return;
+  const el = document.getElementById('fleet-map');
+  if(MAP){ MAP.remove(); }
+  MAP = L.map(el,{scrollWheelZoom:false,attributionControl:true}).setView([48.5,5.5],4);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
+    attribution:'© OpenStreetMap, © CARTO', subdomains:'abcd', maxZoom:19
+  }).addTo(MAP);
+  const base = [fleetData.baseLat, fleetData.baseLng];
+  // Siège
+  L.circleMarker(base,{radius:8,color:'#fff',weight:2,fillColor:'#52525B',fillOpacity:1}).addTo(MAP)
+    .bindPopup(`<b>Siège — ${esc(fleetData.baseCity)}</b>`);
+  // Livraisons + routes
+  (fleetData.deliveries||[]).forEach(x=>{
+    L.polyline([base,[x.lat,x.lng]],{color:'#D4D4D8',weight:1,opacity:.25,dashArray:'4 6'}).addTo(MAP);
+    L.circleMarker([x.lat,x.lng],{radius:6,color:'#fff',weight:1,fillColor:'#A1A1AA',fillOpacity:.95}).addTo(MAP)
+      .bindPopup(`<b>${esc(x.city)}</b><br>${esc(x.cargo||'')}<br><span style="opacity:.7">Statut : ${esc(x.status||'')}</span>`);
+  });
+  // Chauffeurs
+  (fleetData.drivers||[]).forEach(x=>{
+    L.circleMarker([x.lat,x.lng],{radius:7,color:'#111',weight:2,fillColor:'#fff',fillOpacity:1}).addTo(MAP)
+      .bindPopup(`<b>Chauffeur — ${esc(x.name)}</b><br>${esc(x.city)}<br><span style="opacity:.7">${esc(x.status||'')}</span>`);
+  });
+  setTimeout(()=>MAP.invalidateSize(),200);
+  // Liste latérale
+  const fl = document.getElementById('fleet-list');
+  const drvArr=fleetData.drivers||[], dlvArr=fleetData.deliveries||[];
+  if(!drvArr.length && !dlvArr.length){
+    fl.innerHTML = `<div class="glass rounded-xl p-5 text-white/55 text-sm">Aucune tournée en cours pour le moment. Ajoutez vos chauffeurs et livraisons depuis l'espace d'administration.</div>`;
+  } else {
+    const drv = drvArr.map(x=>`<div class="glass rounded-xl p-4 mb-3"><div class="flex items-center justify-between"><span class="font-600 text-white">${esc(x.name)}</span><span class="text-xs px-2 py-0.5 rounded-full bg-white/10 text-white/80">${esc(x.status)}</span></div><div class="text-white/50 text-sm mt-1">${esc(x.city)}</div></div>`).join('');
+    const dlv = dlvArr.map(x=>`<div class="glass rounded-xl p-4 mb-3"><div class="flex items-center justify-between"><span class="font-600 text-white">${esc(x.city)}</span><span class="text-xs px-2 py-0.5 rounded-full bg-white/10 text-white/80">${esc(x.status)}</span></div><div class="text-white/50 text-sm mt-1">${esc(x.cargo||'')}</div></div>`).join('');
+    fl.innerHTML = `${drvArr.length?`<p class="eyebrow text-sky2 text-[0.6rem] mb-3">Chauffeurs</p>${drv}`:''}${dlvArr.length?`<p class="eyebrow text-sky2 text-[0.6rem] mb-3 mt-5">Livraisons</p>${dlv}`:''}`;
+  }
+}
+
+/* ===== Comportements UI ===== */
+function observeReveal(){
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal:not(.in)').forEach(el=>io.observe(el));
+}
+function runCounters(){
+  const cio=new IntersectionObserver((es)=>{es.forEach(e=>{if(!e.isIntersecting)return;const el=e.target,t=+el.dataset.target,start=performance.now();
+    (function tick(now){const p=Math.min((now-start)/1800,1),v=1-Math.pow(1-p,3);el.textContent=Math.round(v*t);if(p<1)requestAnimationFrame(tick);})(start);cio.unobserve(el);});},{threshold:.6});
+  document.querySelectorAll('.counter').forEach(c=>cio.observe(c));
+}
+// Navbar
+const navbar=document.getElementById('navbar'),navLinks=document.getElementById('nav-links'),toTop=document.getElementById('to-top');
+function onScroll(){const s=window.scrollY>40,bn=document.querySelectorAll('#brand-link .brand-name');
+  if(s){navbar.classList.add('bg-white/90','backdrop-blur-xl','shadow-soft','border-b','border-navy/5');navLinks.classList.remove('text-white/80');navLinks.classList.add('text-navy/70');navLinks.querySelectorAll('a').forEach(a=>{a.classList.remove('hover:text-white');a.classList.add('hover:text-electric');});bn.forEach(e=>{e.classList.remove('text-white');e.classList.add('text-navy');});}
+  else{navbar.classList.remove('bg-white/90','backdrop-blur-xl','shadow-soft','border-b','border-navy/5');navLinks.classList.add('text-white/80');navLinks.classList.remove('text-navy/70');navLinks.querySelectorAll('a').forEach(a=>{a.classList.add('hover:text-white');a.classList.remove('hover:text-electric');});bn.forEach(e=>{e.classList.add('text-white');e.classList.remove('text-navy');});}
+  toTop.classList.toggle('opacity-0',window.scrollY<=600);toTop.classList.toggle('translate-y-4',window.scrollY<=600);toTop.classList.toggle('pointer-events-none',window.scrollY<=600);
+}
+window.addEventListener('scroll',onScroll,{passive:true});
+toTop.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+// Mobile menu
+const menuBtn=document.getElementById('menu-btn'),mm=document.getElementById('mobile-menu'),io_=document.getElementById('icon-open'),ic_=document.getElementById('icon-close');let mo=false;
+function setMenu(o){mo=o;menuBtn.setAttribute('aria-expanded',o);mm.classList.toggle('scale-y-0',!o);mm.classList.toggle('opacity-0',!o);mm.classList.toggle('scale-y-100',o);mm.classList.toggle('opacity-100',o);io_.classList.toggle('hidden',o);ic_.classList.toggle('hidden',!o);}
+menuBtn.addEventListener('click',()=>setMenu(!mo));
+document.querySelectorAll('.mobile-link').forEach(l=>l.addEventListener('click',()=>setMenu(false)));
+// Form
+const form=document.getElementById('contact-form'),fst=document.getElementById('form-status');
+form.addEventListener('submit',e=>{e.preventDefault();const ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(document.getElementById('email').value.trim());fst.classList.remove('hidden');
+  if(!document.getElementById('nom').value.trim()||!ok||!document.getElementById('msg').value.trim()){fst.textContent='Merci de renseigner votre nom, un email valide et votre message.';fst.className='mt-4 text-sm text-amber-600';return;}
+  fst.textContent='Merci ! Votre demande a bien été envoyée. Nous vous recontactons sous 24 h ouvrées.';fst.className='mt-4 text-sm text-emerald-600';form.reset();});
+
+/* ===== Chargement des données ===== */
+(async function load(){
+  const preview = new URLSearchParams(location.search).get('preview')==='1';
+  let data=null;
+  if(preview){ try{ data=JSON.parse(localStorage.getItem('gf_site_data')); }catch(e){} }
+  if(!data){ try{ const r=await fetch('data.json',{cache:'no-store'}); if(r.ok) data=await r.json(); }catch(e){} }
+  render(data||DEFAULTS);
+  onScroll();
+})();
+</script>
+</body>
+</html>
