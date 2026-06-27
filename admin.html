@@ -19,6 +19,13 @@
   .btn-ghost{background:#f4f4f5;color:#18181b;border:1px solid #e4e4e7;} .btn-ghost:hover{background:#e4e4e7;}
   .row{display:grid;gap:.75rem;}
   .chip{font-size:.7rem;background:#f4f4f5;border:1px solid #e4e4e7;border-radius:9999px;padding:.15rem .6rem;}
+  #code-drawer{position:fixed;top:0;right:0;height:100vh;width:min(480px,94vw);background:#0f1115;color:#e4e4e7;transform:translateX(100%);transition:transform .25s ease;z-index:60;display:flex;flex-direction:column;box-shadow:-24px 0 60px -20px rgba(0,0,0,.55);}
+  #code-drawer.open{transform:none;}
+  .codewrap{flex:1;overflow:auto;display:flex;align-items:flex-start;font:12px/1.55 ui-monospace,Menlo,Consolas,monospace;}
+  .gutter{padding:1rem .7rem;text-align:right;color:#52525b;user-select:none;background:#0a0c0f;position:sticky;left:0;white-space:pre;}
+  .codepre{padding:1rem;margin:0;white-space:pre;color:#d4d4d8;}
+  .code-ov{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:55;opacity:0;pointer-events:none;transition:opacity .25s;}
+  .code-ov.open{opacity:1;pointer-events:auto;}
 </style>
 </head>
 <body class="bg-zinc-100 text-zinc-900">
@@ -54,6 +61,7 @@
         <button id="import" class="btn btn-ghost">⬆ Importer</button>
         <input id="import-file" type="file" accept="application/json" class="hidden" />
         <button id="save" class="btn btn-ghost">💾 Enregistrer</button>
+        <button id="show-code" class="btn btn-ghost">&lt;/&gt; Code</button>
         <button id="export" class="btn btn-dark">⬇ Exporter data.json</button>
         <button id="logout" class="btn btn-ghost">Quitter</button>
       </div>
@@ -66,6 +74,21 @@
     </p>
     <div id="editor" class="space-y-6"></div>
   </main>
+</div>
+
+<div id="code-ov" class="code-ov"></div>
+<div id="code-drawer">
+  <div class="flex items-center justify-between px-4 py-3 border-b border-white/10">
+    <span class="dsp font-700 text-sm">data.json — à copier</span>
+    <div class="flex gap-2">
+      <button id="copy-code" class="btn btn-dark text-sm">📋 Copier le code</button>
+      <button id="close-code" class="btn btn-ghost text-sm">✕</button>
+    </div>
+  </div>
+  <div class="codewrap"><div id="gutter" class="gutter"></div><pre id="codepre" class="codepre"></pre></div>
+  <div class="px-4 py-3 border-t border-white/10 text-xs text-white/50 leading-relaxed">
+    Sur GitHub : ouvrez <code>data.json</code> → ✏️ <b>Edit</b> → tout sélectionner (Ctrl+A) → <b>collez</b> → <b>Commit changes</b>. Le site est à jour.
+  </div>
 </div>
 
 <script>
@@ -249,7 +272,7 @@ function rowGrid(nodes){const g=document.createElement('div');g.className='grid 
 
 /* ---- Sauvegarde automatique (brouillon local) ---- */
 let _autoT;
-function autosave(){clearTimeout(_autoT);setInd('Enregistrement…','text-zinc-400');_autoT=setTimeout(()=>{localStorage.setItem('gf_site_data',JSON.stringify(W));setInd('✓ Brouillon enregistré','text-emerald-600');},500);}
+function autosave(){clearTimeout(_autoT);setInd('Enregistrement…','text-zinc-400');_autoT=setTimeout(()=>{localStorage.setItem('gf_site_data',JSON.stringify(W));setInd('✓ Brouillon enregistré','text-emerald-600');const dr=document.getElementById('code-drawer');if(dr&&dr.classList.contains('open'))renderCode();},500);}
 function setInd(t,cls){const i=$('auto-ind');if(i){i.textContent=t;i.className='text-xs mr-1 '+(cls||'text-emerald-600');}}
 document.addEventListener('DOMContentLoaded',()=>{});
 $('editor').addEventListener('input',autosave);
@@ -267,6 +290,16 @@ $('export').addEventListener('click',()=>{
 $('import').addEventListener('click',()=>$('import-file').click());
 $('import-file').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{W=JSON.parse(r.result);localStorage.setItem('gf_site_data',JSON.stringify(W));buildEditor();flash('Importé ✔');}catch(err){alert('Fichier JSON invalide.');}};r.readAsText(f);});
 $('logout').addEventListener('click',()=>{sessionStorage.removeItem('gf_admin');location.reload();});
+
+/* ---- Panneau Code (copier-coller) ---- */
+const drawer=$('code-drawer'),ov=$('code-ov');
+function renderCode(){const txt=JSON.stringify(W,null,2);const n=txt.split('\n').length;$('gutter').textContent=Array.from({length:n},(_,i)=>i+1).join('\n');$('codepre').textContent=txt;}
+function openCode(){renderCode();drawer.classList.add('open');ov.classList.add('open');}
+function closeCode(){drawer.classList.remove('open');ov.classList.remove('open');}
+$('show-code').addEventListener('click',openCode);
+$('close-code').addEventListener('click',closeCode);
+ov.addEventListener('click',closeCode);
+$('copy-code').addEventListener('click',async()=>{const txt=JSON.stringify(W,null,2);let ok=false;try{await navigator.clipboard.writeText(txt);ok=true;}catch(e){const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{ok=document.execCommand('copy');}catch(_){}ta.remove();}flash(ok?'Code copié ✔ — collez-le dans data.json sur GitHub':'Copie impossible : sélectionnez le texte manuellement.');});
 
 function flash(msg){const d=document.createElement('div');d.textContent=msg;d.className='fixed bottom-5 left-1/2 -translate-x-1/2 bg-zinc-900 text-white text-sm px-4 py-2 rounded-lg shadow-lg z-50';document.body.appendChild(d);setTimeout(()=>d.remove(),2600);}
 </script>
