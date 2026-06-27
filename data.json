@@ -1,0 +1,57 @@
+{
+  "brand": {
+    "name": "Gallfray & Fils",
+    "tagline": "transport · normandie",
+    "logoType": "text",
+    "logoImage": ""
+  },
+  "hero": {
+    "coords": "N 49.5° · E 0.1° — Normandie, ports du Havre & de Rouen",
+    "title": "Votre partenaire transport de confiance",
+    "subtitle": "Des solutions logistiques fiables, efficaces et adaptées à vos besoins partout en Europe.",
+    "bgImage": "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=2000&q=80"
+  },
+  "about": {
+    "eyebrow": "À propos · Maison de transport normande",
+    "title": "Un savoir-faire familial au service de votre supply chain",
+    "text": "Maison familiale née en Normandie, Gallfray & Fils s'est imposée comme un acteur de référence du transport routier de marchandises. Notre métier : acheminer vos flux avec rigueur, transparence et la régularité qui fait notre réputation, des ports du Havre et de Rouen jusqu'aux grands corridors européens.",
+    "image": "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1400&q=80"
+  },
+  "stats": [
+    { "value": 15, "suffix": "+", "label": "années d'expérience" },
+    { "value": 250, "suffix": "+", "label": "clients satisfaits" },
+    { "value": 30, "suffix": "", "label": "pays desservis" },
+    { "value": 98, "suffix": "%", "label": "de livraisons dans les délais" }
+  ],
+  "services": [
+    { "title": "Transport national", "desc": "Lots complets et groupage sur l'ensemble du territoire, avec des plans de transport optimisés." },
+    { "title": "Transport international", "desc": "Acheminements transfrontaliers maîtrisés, gestion documentaire et douanière comprises." },
+    { "title": "Logistique", "desc": "Stockage, préparation de commandes et gestion des stocks au sein de nos plateformes." },
+    { "title": "Livraison express", "desc": "Solutions urgentes et dédiées, avec affrètement réactif et créneaux garantis." },
+    { "title": "Gestion de flotte", "desc": "Pilotage, maintenance et télématique embarquée pour une disponibilité maximale." },
+    { "title": "Solutions sur mesure", "desc": "Schémas logistiques conçus avec vous, pour vos flux spécifiques et saisonniers." }
+  ],
+  "engagements": [
+    { "title": "Sécurité", "desc": "Procédures strictes, conducteurs formés et marchandises protégées à chaque étape." },
+    { "title": "Ponctualité", "desc": "Des créneaux respectés et une information proactive en cas d'aléa." },
+    { "title": "Fiabilité", "desc": "Un engagement constant, mesuré par des indicateurs de performance partagés." },
+    { "title": "Innovation", "desc": "Télématique, planification intelligente et outils de suivi en temps réel." },
+    { "title": "Développement durable", "desc": "Optimisation des trajets, motorisations propres et réduction continue de notre empreinte carbone." }
+  ],
+  "testimonials": [],
+  "news": [],
+  "contact": {
+    "phone": "+33 (0)2 35 00 00 00",
+    "email": "contact@gallfray-fils.fr",
+    "address": "Parc logistique du Pont de Normandie, 8 rue des Transporteurs · 76600 Le Havre",
+    "mapLat": 49.49,
+    "mapLng": 0.11
+  },
+  "fleet": {
+    "baseCity": "Le Havre",
+    "baseLat": 49.49,
+    "baseLng": 0.11,
+    "deliveries": [],
+    "drivers": []
+  }
+}
