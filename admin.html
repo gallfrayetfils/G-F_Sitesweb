@@ -7,25 +7,27 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
-  body{font-family:'Inter',sans-serif;}
-  .dsp{font-family:'Space Grotesk',sans-serif;}
-  input,textarea,select{outline:none;}
+  body{font-family:'Inter',sans-serif;} .dsp{font-family:'Space Grotesk',sans-serif;}
   .fld{width:100%;border-radius:.6rem;background:#fff;border:1px solid #d4d4d8;padding:.6rem .8rem;font-size:.9rem;}
-  .fld:focus{border-color:#3f3f46;box-shadow:0 0 0 3px rgba(63,63,70,.12);}
+  .fld:focus{outline:none;border-color:#3f3f46;box-shadow:0 0 0 3px rgba(63,63,70,.12);}
   .lbl{font-size:.72rem;font-weight:600;color:#52525b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem;display:block;}
-  .card{background:#fff;border:1px solid #e4e4e7;border-radius:1rem;padding:1.25rem 1.25rem 1.4rem;box-shadow:0 8px 30px -16px rgba(0,0,0,.2);}
-  .btn{border-radius:.6rem;padding:.6rem 1rem;font-weight:600;font-size:.9rem;transition:.15s;}
+  .card{background:#fff;border:1px solid #e4e4e7;border-radius:1rem;padding:1.25rem 1.25rem 1.4rem;box-shadow:0 8px 30px -16px rgba(0,0,0,.18);scroll-margin-top:90px;}
+  .btn{border-radius:.6rem;padding:.55rem .9rem;font-weight:600;font-size:.85rem;transition:.15s;cursor:pointer;}
   .btn-dark{background:#18181b;color:#fff;} .btn-dark:hover{background:#000;}
   .btn-ghost{background:#f4f4f5;color:#18181b;border:1px solid #e4e4e7;} .btn-ghost:hover{background:#e4e4e7;}
-  .row{display:grid;gap:.75rem;}
+  .navlink{display:block;padding:.5rem .75rem;border-radius:.5rem;font-size:.88rem;color:#3f3f46;transition:.15s;cursor:pointer;}
+  .navlink:hover{background:#f4f4f5;} .navlink.active{background:#18181b;color:#fff;}
   .chip{font-size:.7rem;background:#f4f4f5;border:1px solid #e4e4e7;border-radius:9999px;padding:.15rem .6rem;}
   #code-drawer{position:fixed;top:0;right:0;height:100vh;width:min(480px,94vw);background:#0f1115;color:#e4e4e7;transform:translateX(100%);transition:transform .25s ease;z-index:60;display:flex;flex-direction:column;box-shadow:-24px 0 60px -20px rgba(0,0,0,.55);}
   #code-drawer.open{transform:none;}
   .codewrap{flex:1;overflow:auto;display:flex;align-items:flex-start;font:12px/1.55 ui-monospace,Menlo,Consolas,monospace;}
-  .gutter{padding:1rem .7rem;text-align:right;color:#52525b;user-select:none;background:#0a0c0f;position:sticky;left:0;white-space:pre;}
+  .gutter{padding:1rem .7rem;text-align:right;color:#52525b;user-select:none;background:#0a0c0f;white-space:pre;}
   .codepre{padding:1rem;margin:0;white-space:pre;color:#d4d4d8;}
-  .code-ov{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:55;opacity:0;pointer-events:none;transition:opacity .25s;}
-  .code-ov.open{opacity:1;pointer-events:auto;}
+  .code-ov{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:55;opacity:0;pointer-events:none;transition:opacity .25s;} .code-ov.open{opacity:1;pointer-events:auto;}
+  .pmark{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none;}
+  .pdot{width:12px;height:12px;border-radius:9999px;background:#fff;border:2px solid #111;}
+  .pdiam{width:13px;height:13px;background:linear-gradient(135deg,#f4f4f5,#52525b);transform:rotate(45deg);border:2px solid #fff;}
+  .plabel{font:600 10px/1 'Space Grotesk';color:#fff;background:rgba(0,0,0,.65);padding:1px 5px;border-radius:9999px;white-space:nowrap;}
 </style>
 </head>
 <body class="bg-zinc-100 text-zinc-900">
@@ -34,17 +36,13 @@
 <div id="login" class="min-h-screen grid place-items-center px-5">
   <div class="card w-full max-w-sm">
     <div class="text-center mb-6">
-      <div class="mx-auto w-12 h-12 grid place-items-center">
-        <svg viewBox="0 0 40 40" class="w-12 h-12"><defs><linearGradient id="c" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F4F4F5"/><stop offset=".5" stop-color="#A1A1AA"/><stop offset="1" stop-color="#52525B"/></linearGradient></defs><rect x="6" y="6" width="28" height="28" rx="4" transform="rotate(45 20 20)" fill="#18181B" stroke="url(#c)" stroke-width="1.5"/></svg>
-      </div>
+      <svg viewBox="0 0 40 40" class="w-12 h-12 mx-auto"><defs><linearGradient id="c" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F4F4F5"/><stop offset=".5" stop-color="#A1A1AA"/><stop offset="1" stop-color="#52525B"/></linearGradient></defs><rect x="6" y="6" width="28" height="28" rx="4" transform="rotate(45 20 20)" fill="#18181B" stroke="url(#c)" stroke-width="1.5"/></svg>
       <h1 class="dsp font-700 text-xl mt-3">Espace administrateur</h1>
       <p class="text-zinc-500 text-sm mt-1">Gallfray &amp; Fils</p>
     </div>
-    <label class="lbl">Code utilisateur</label>
-    <input id="u" class="fld mb-3" autocomplete="username" />
-    <label class="lbl">Mot de passe</label>
-    <input id="p" type="password" class="fld mb-4" autocomplete="current-password" />
-    <button id="login-btn" class="btn btn-dark w-full">Se connecter</button>
+    <label class="lbl">Code utilisateur</label><input id="u" class="fld mb-3" autocomplete="username" />
+    <label class="lbl">Mot de passe</label><input id="p" type="password" class="fld mb-4" autocomplete="current-password" />
+    <button id="login-btn" class="btn btn-dark w-full" style="padding:.7rem">Se connecter</button>
     <p id="login-err" class="text-red-600 text-sm mt-3 hidden">Identifiants incorrects.</p>
   </div>
 </div>
@@ -52,43 +50,42 @@
 <!-- APP -->
 <div id="app" class="hidden">
   <header class="sticky top-0 z-20 bg-white/90 backdrop-blur border-b border-zinc-200">
-    <div class="max-w-5xl mx-auto px-5 py-3 flex items-center justify-between gap-3 flex-wrap">
+    <div class="max-w-6xl mx-auto px-5 py-3 flex items-center justify-between gap-3 flex-wrap">
       <div class="flex items-center gap-2"><span class="dsp font-700">Administration</span><span class="chip">Gallfray &amp; Fils</span></div>
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 flex-wrap">
         <span id="auto-ind" class="text-xs text-emerald-600 mr-1"></span>
         <a href="index.html" class="btn btn-ghost inline-flex items-center no-underline">← Voir le site</a>
         <button id="preview" class="btn btn-ghost">👁 Aperçu</button>
+        <button id="show-code" class="btn btn-ghost">&lt;/&gt; Code</button>
+        <button id="export" class="btn btn-dark">⬇ Exporter</button>
         <button id="import" class="btn btn-ghost">⬆ Importer</button>
         <input id="import-file" type="file" accept="application/json" class="hidden" />
-        <button id="save" class="btn btn-ghost">💾 Enregistrer</button>
-        <button id="show-code" class="btn btn-ghost">&lt;/&gt; Code</button>
-        <button id="export" class="btn btn-dark">⬇ Exporter data.json</button>
         <button id="logout" class="btn btn-ghost">Quitter</button>
       </div>
     </div>
   </header>
 
-  <main class="max-w-5xl mx-auto px-5 py-8 space-y-6">
-    <p class="text-sm text-zinc-500 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
-      Vos modifications sont <b>enregistrées automatiquement</b> (brouillon dans ce navigateur) — aucun risque de perte. Pour <b>publier en ligne pour tous les visiteurs</b> : cliquez <b>Exporter data.json</b> et déposez le fichier sur GitHub (à côté de <code>index.html</code>).
-    </p>
-    <div id="editor" class="space-y-6"></div>
-  </main>
+  <div class="max-w-6xl mx-auto px-5 py-8 grid lg:grid-cols-[210px_1fr] gap-8">
+    <aside class="hidden lg:block">
+      <nav id="sidenav" class="sticky top-24 space-y-1"></nav>
+    </aside>
+    <main>
+      <p class="text-sm text-zinc-500 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-6">
+        Vos modifications sont <b>enregistrées automatiquement</b>. Pour <b>publier en ligne</b> : <b>Code</b> → <b>Copier</b>, puis collez dans <code>data.json</code> sur GitHub (ou <b>Exporter</b>).
+      </p>
+      <div id="editor" class="space-y-6"></div>
+    </main>
+  </div>
 </div>
 
 <div id="code-ov" class="code-ov"></div>
 <div id="code-drawer">
   <div class="flex items-center justify-between px-4 py-3 border-b border-white/10">
     <span class="dsp font-700 text-sm">data.json — à copier</span>
-    <div class="flex gap-2">
-      <button id="copy-code" class="btn btn-dark text-sm">📋 Copier le code</button>
-      <button id="close-code" class="btn btn-ghost text-sm">✕</button>
-    </div>
+    <div class="flex gap-2"><button id="copy-code" class="btn btn-dark text-sm">📋 Copier</button><button id="close-code" class="btn btn-ghost text-sm">✕</button></div>
   </div>
   <div class="codewrap"><div id="gutter" class="gutter"></div><pre id="codepre" class="codepre"></pre></div>
-  <div class="px-4 py-3 border-t border-white/10 text-xs text-white/50 leading-relaxed">
-    Sur GitHub : ouvrez <code>data.json</code> → ✏️ <b>Edit</b> → tout sélectionner (Ctrl+A) → <b>collez</b> → <b>Commit changes</b>. Le site est à jour.
-  </div>
+  <div class="px-4 py-3 border-t border-white/10 text-xs text-white/50 leading-relaxed">Sur GitHub : ouvrez <code>data.json</code> → ✏️ Edit → Ctrl+A → collez → Commit changes.</div>
 </div>
 
 <script>
@@ -97,230 +94,175 @@ const AUTH = { user: "admin", pass: "gallfray76" };
 /* ========================================== */
 
 const DEFAULTS = {
-  brand:{name:"Gallfray & Fils",tagline:"transport · normandie",logoType:"text",logoImage:""},
-  hero:{coords:"N 49.5° · E 0.1° — Normandie, ports du Havre & de Rouen",title:"Votre partenaire transport de confiance",subtitle:"Des solutions logistiques fiables, efficaces et adaptées à vos besoins partout en Europe.",bgImage:"https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=2000&q=80"},
-  about:{eyebrow:"À propos · Maison de transport normande",title:"Un savoir-faire familial au service de votre supply chain",text:"Maison familiale née en Normandie...",image:"https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1400&q=80"},
-  stats:[{value:15,suffix:"+",label:"années d'expérience"},{value:250,suffix:"+",label:"clients satisfaits"},{value:30,suffix:"",label:"pays desservis"},{value:98,suffix:"%",label:"de livraisons dans les délais"}],
-  services:[{title:"Transport national",desc:"Lots complets et groupage..."},{title:"Transport international",desc:"Acheminements transfrontaliers..."},{title:"Logistique",desc:"Stockage, préparation de commandes..."},{title:"Livraison express",desc:"Solutions urgentes et dédiées..."},{title:"Gestion de flotte",desc:"Pilotage, maintenance..."},{title:"Solutions sur mesure",desc:"Schémas logistiques conçus avec vous..."}],
-  engagements:[{title:"Sécurité",desc:"Procédures strictes..."},{title:"Ponctualité",desc:"Des créneaux respectés..."},{title:"Fiabilité",desc:"Un engagement constant..."},{title:"Innovation",desc:"Télématique, suivi en temps réel..."},{title:"Développement durable",desc:"Optimisation des trajets..."}],
+  brand:{name:"Gallfray & Fils",tagline:"transport · auvergne",logoImage:""},
+  hero:{coords:"N 45.8° · E 3.1° — Auvergne, au cœur de la France",title:"Votre partenaire transport de confiance",subtitle:"Une équipe soudée, une flotte soignée, des kilomètres avalés à travers toute l'Europe.",bgImage:"https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=2000&q=80"},
+  about:{eyebrow:"À propos · Maison de transport auvergnate",title:"Un esprit d'équipe au cœur de l'Auvergne",text:"Basés en Auvergne...",image:"https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1400&q=80"},
+  stats:[{value:15,suffix:"+",label:"années d'expérience"},{value:40,suffix:"+",label:"chauffeurs"},{value:30,suffix:"",label:"pays parcourus"},{value:98,suffix:"%",label:"de livraisons à l'heure"}],
+  engagements:[{title:"Sécurité",desc:"Conduite responsable et matériel entretenu."},{title:"Ponctualité",desc:"Des livraisons assurées dans les temps."},{title:"Fiabilité",desc:"Un engagement constant."},{title:"Esprit d'équipe",desc:"Une communauté soudée."},{title:"Passion",desc:"L'amour de la route."}],
+  fleet:{mapImage:"",depotImage:"",baseName:"Siège — Clermont-Ferrand",baseX:50,baseY:50,drivers:[{name:"Antoine",truckImage:"",role:"Conducteur SPL",steam:"",delivery:"Clermont-Ferrand → Lyon",x:48,y:55}]},
   testimonials:[],
   news:[],
-  jobs:[{title:"Conducteur SPL (H/F)",desc:"Transport de marchandises sur lignes nationales et internationales.",image:"https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=900&q=80"}],
-  contact:{phone:"",email:"",address:"",mapLat:49.49,mapLng:0.11,discordWebhook:""},
-  fleet:{baseCity:"Le Havre",baseLat:49.49,baseLng:0.11,
-    deliveries:[],
-    drivers:[]}
+  jobs:[{title:"Conducteur SPL (H/F)",desc:"Transport sur lignes nationales et internationales.",image:"https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=900&q=80"}],
+  discord:{webhook:"",invite:""}
 };
 
-const CITIES = {"le havre":[49.49,0.11],"rouen":[49.4432,1.0993],"caen":[49.1829,-0.3707],"paris":[48.8566,2.3522],"lille":[50.6292,3.0573],"lyon":[45.764,4.8357],"marseille":[43.2965,5.3698],"bordeaux":[44.8378,-0.5792],"nantes":[47.2184,-1.5536],"strasbourg":[48.5734,7.7521],"reims":[49.2583,4.0317],"toulouse":[43.6047,1.4442],"nice":[43.7102,7.262],"brest":[48.3904,-4.4861],"calais":[50.9513,1.8587],"dijon":[47.322,5.0415],"bruxelles":[50.8503,4.3517],"anvers":[51.2194,4.4025],"amsterdam":[52.3676,4.9041],"rotterdam":[51.9244,4.4777],"cologne":[50.9375,6.9603],"berlin":[52.52,13.405],"hambourg":[53.5511,9.9937],"munich":[48.1351,11.582],"francfort":[50.1109,8.6821],"luxembourg":[49.6116,6.1319],"zurich":[47.3769,8.5417],"geneve":[46.2044,6.1432],"milan":[45.4642,9.19],"rome":[41.9028,12.4964],"turin":[45.0703,7.6869],"venise":[45.4408,12.3155],"madrid":[40.4168,-3.7038],"barcelone":[41.3851,2.1734],"valence":[39.4699,-0.3763],"lisbonne":[38.7223,-9.1393],"porto":[41.1579,-8.6291],"vienne":[48.2082,16.3738],"prague":[50.0755,14.4378],"varsovie":[52.2297,21.0122],"budapest":[47.4979,19.0402],"londres":[51.5074,-0.1278],"dublin":[53.3498,-6.2603],"copenhague":[55.6761,12.5683],"stockholm":[59.3293,18.0686],"oslo":[59.9139,10.7522]};
+let W; const $=id=>document.getElementById(id); const clone=o=>JSON.parse(JSON.stringify(o));
 
-let W; // working data
-const $=id=>document.getElementById(id);
-const clone=o=>JSON.parse(JSON.stringify(o));
-
-/* ---- Login ---- */
-function tryLogin(){
-  if($('u').value.trim()===AUTH.user && $('p').value===AUTH.pass){
-    sessionStorage.setItem('gf_admin','1'); start();
-  } else { $('login-err').classList.remove('hidden'); }
-}
+/* Login */
+function tryLogin(){ if($('u').value.trim()===AUTH.user && $('p').value===AUTH.pass){sessionStorage.setItem('gf_admin','1');start();} else $('login-err').classList.remove('hidden'); }
 $('login-btn').addEventListener('click',tryLogin);
 $('p').addEventListener('keydown',e=>{if(e.key==='Enter')tryLogin();});
 
 async function start(){
   $('login').classList.add('hidden'); $('app').classList.remove('hidden');
-  // charge: localStorage > data.json > defaults
-  let d=null;
-  try{ d=JSON.parse(localStorage.getItem('gf_site_data')); }catch(e){}
-  if(!d){ try{ const r=await fetch('data.json',{cache:'no-store'}); if(r.ok) d=await r.json(); }catch(e){} }
-  W = d||clone(DEFAULTS);
-  buildEditor();
+  let d=null; try{d=JSON.parse(localStorage.getItem('gf_site_data'));}catch(e){}
+  if(!d){try{const r=await fetch('data.json',{cache:'no-store'});if(r.ok)d=await r.json();}catch(e){}}
+  W=d||clone(DEFAULTS); normalize(); buildSidebar(); buildEditor();
 }
 if(sessionStorage.getItem('gf_admin')==='1') start();
 
-/* ---- Helpers de champ ---- */
-function field(label,val,on,type='text'){
-  const w=document.createElement('div');
-  w.innerHTML=`<label class="lbl">${label}</label>`;
-  const i=document.createElement(type==='area'?'textarea':'input'); i.className='fld';
-  if(type==='area'){i.rows=3;} else {i.type=type;}
-  i.value=val??''; i.addEventListener('input',()=>on(type==='number'?parseFloat(i.value):i.value));
-  w.appendChild(i); return w;
-}
-function resizeImage(file,maxW){return new Promise(res=>{const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{let{width:w,height:h}=img;if(w>maxW){h=h*maxW/w;w=maxW;}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);res(c.toDataURL('image/jpeg',0.82));};img.src=r.result;};r.readAsDataURL(file);});}
-function imageField(label,val,set){
-  const w=document.createElement('div');
-  w.innerHTML=`<label class="lbl">${label}</label>`;
-  const row=document.createElement('div'); row.className='flex gap-2 items-center';
-  const i=document.createElement('input'); i.className='fld'; i.placeholder='URL de l\'image ou téléversez →'; i.value=val||'';
-  i.addEventListener('input',()=>{set(i.value);prev.src=i.value;});
-  const up=document.createElement('label'); up.className='btn btn-ghost cursor-pointer whitespace-nowrap'; up.textContent='📁';
-  const fi=document.createElement('input'); fi.type='file'; fi.accept='image/*'; fi.className='hidden';
-  fi.addEventListener('change',async()=>{if(fi.files[0]){const d=await resizeImage(fi.files[0],1600);i.value=d;set(d);prev.src=d;}});
-  up.appendChild(fi);
-  row.append(i,up); w.appendChild(row);
-  const prev=document.createElement('img'); prev.src=val||''; prev.className='mt-2 h-20 rounded-lg object-cover border border-zinc-200'; prev.onerror=()=>prev.style.display='none'; prev.onload=()=>prev.style.display='';
-  w.appendChild(prev); return w;
-}
-function sectionCard(title,desc){const c=document.createElement('section');c.className='card';c.innerHTML=`<h2 class="dsp font-700 text-lg">${title}</h2>${desc?`<p class="text-sm text-zinc-500 mt-1 mb-4">${desc}</p>`:'<div class="mb-4"></div>'}`;return c;}
-function listEditor(arr,fields,addLabel,onChange){
-  const wrap=document.createElement('div'); wrap.className='space-y-3';
-  function draw(){
-    wrap.innerHTML='';
-    arr.forEach((item,idx)=>{
-      const box=document.createElement('div'); box.className='rounded-xl border border-zinc-200 p-3 bg-zinc-50';
-      const grid=document.createElement('div'); grid.className='grid sm:grid-cols-2 gap-3';
-      fields.forEach(f=>{
-        if(f.type==='image'){ grid.appendChild(imageField(f.label,item[f.key],v=>{item[f.key]=v;onChange();})); }
-        else if(f.type==='city'){
-          const cell=document.createElement('div');
-          cell.appendChild(field(f.label,item[f.key],v=>{item[f.key]=v;onChange();}));
-          const b=document.createElement('button'); b.className='btn btn-ghost mt-2 text-sm'; b.textContent='📍 Trouver les coordonnées';
-          b.addEventListener('click',()=>{const k=(item[f.key]||'').trim().toLowerCase();if(CITIES[k]){item.lat=CITIES[k][0];item.lng=CITIES[k][1];onChange();draw();}else{alert('Ville inconnue du répertoire. Saisissez lat/lng à la main.');}});
-          cell.appendChild(b); grid.appendChild(cell);
-        }
-        else { grid.appendChild(field(f.label,item[f.key],v=>{item[f.key]=v;onChange();},f.type||'text')); }
-      });
-      box.appendChild(grid);
-      const del=document.createElement('button'); del.className='btn btn-ghost mt-3 text-red-600 text-sm'; del.textContent='🗑 Supprimer';
-      del.addEventListener('click',()=>{arr.splice(idx,1);onChange();draw();});
-      box.appendChild(del); wrap.appendChild(box);
-    });
-    const add=document.createElement('button'); add.className='btn btn-dark text-sm'; add.textContent='＋ '+addLabel;
-    add.addEventListener('click',()=>{const o={};fields.forEach(f=>o[f.key]=f.def!==undefined?f.def:'');if(fields.some(f=>f.type==='city')){o.lat='';o.lng='';}arr.push(o);onChange();draw();});
-    wrap.appendChild(add);
-  }
-  draw(); return wrap;
+function normalize(){
+  W.brand=W.brand||{}; if(W.brand.logoImage===undefined)W.brand.logoImage='';
+  W.hero=W.hero||{}; W.about=W.about||{}; W.stats=W.stats||[]; W.engagements=W.engagements||[];
+  W.testimonials=W.testimonials||[]; W.news=W.news||[]; W.jobs=W.jobs||[];
+  W.discord=W.discord||{webhook:'',invite:''}; if(W.discord.webhook===undefined)W.discord.webhook='';if(W.discord.invite===undefined)W.discord.invite='';
+  W.fleet=W.fleet||{}; W.fleet.drivers=W.fleet.drivers||[];
+  if(W.fleet.baseX==null)W.fleet.baseX=50; if(W.fleet.baseY==null)W.fleet.baseY=50;
+  if(W.fleet.mapImage===undefined)W.fleet.mapImage=''; if(W.fleet.depotImage===undefined)W.fleet.depotImage='';
+  if(!W.fleet.baseName)W.fleet.baseName='Siège';
 }
 
-/* ---- Construction de l'éditeur ---- */
+/* Autosave */
+let _t;
+function autosave(){clearTimeout(_t);setInd('Enregistrement…','text-zinc-400');_t=setTimeout(()=>{localStorage.setItem('gf_site_data',JSON.stringify(W));setInd('✓ Brouillon enregistré','text-emerald-600');const dr=$('code-drawer');if(dr&&dr.classList.contains('open'))renderCode();},500);}
+function setInd(t,c){const i=$('auto-ind');if(i){i.textContent=t;i.className='text-xs mr-1 '+(c||'text-emerald-600');}}
+$('editor').addEventListener('input',autosave);
+$('editor').addEventListener('change',autosave);
+
+/* Helpers champs */
+function field(label,val,on,type='text'){const w=document.createElement('div');w.innerHTML=`<label class="lbl">${label}</label>`;const i=document.createElement(type==='area'?'textarea':'input');i.className='fld';if(type==='area')i.rows=3;else i.type=type;i.value=val??'';i.addEventListener('input',()=>on(type==='number'?parseFloat(i.value):i.value));w.appendChild(i);return w;}
+function resizeImage(file,maxW){return new Promise(res=>{const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{let w=img.width,h=img.height;if(w>maxW){h=h*maxW/w;w=maxW;}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);res(c.toDataURL('image/jpeg',0.85));};img.src=r.result;};r.readAsDataURL(file);});}
+function imageField(label,val,set,maxW){maxW=maxW||1600;const w=document.createElement('div');w.innerHTML=`<label class="lbl">${label}</label>`;const row=document.createElement('div');row.className='flex gap-2 items-center';const i=document.createElement('input');i.className='fld';i.placeholder="URL ou téléversez →";i.value=val||'';i.addEventListener('input',()=>{set(i.value);prev.src=i.value;});const up=document.createElement('label');up.className='btn btn-ghost cursor-pointer whitespace-nowrap';up.textContent='📁';const fi=document.createElement('input');fi.type='file';fi.accept='image/*';fi.className='hidden';fi.addEventListener('change',async()=>{if(fi.files[0]){const d=await resizeImage(fi.files[0],maxW);i.value=d;set(d);prev.src=d;autosave();}});up.appendChild(fi);row.append(i,up);w.appendChild(row);const prev=document.createElement('img');prev.src=val||'';prev.className='mt-2 h-20 rounded-lg object-cover border border-zinc-200';prev.onerror=()=>prev.style.display='none';prev.onload=()=>prev.style.display='';w.appendChild(prev);return w;}
+function sectionCard(id,title,desc){const c=document.createElement('section');c.className='card';c.id='card-'+id;c.innerHTML=`<h2 class="dsp font-700 text-lg">${title}</h2>${desc?`<p class="text-sm text-zinc-500 mt-1 mb-4">${desc}</p>`:'<div class="mb-4"></div>'}`;return c;}
+function rowGrid(nodes){const g=document.createElement('div');g.className='grid sm:grid-cols-2 gap-3 mb-3';nodes.forEach(n=>g.appendChild(n));return g;}
+function listEditor(arr,fields,addLabel,onChange){const wrap=document.createElement('div');wrap.className='space-y-3';
+  function draw(){wrap.innerHTML='';arr.forEach((item,idx)=>{const box=document.createElement('div');box.className='rounded-xl border border-zinc-200 p-3 bg-zinc-50';const grid=document.createElement('div');grid.className='grid sm:grid-cols-2 gap-3';
+    fields.forEach(f=>{ if(f.type==='image')grid.appendChild(imageField(f.label,item[f.key],v=>{item[f.key]=v;onChange&&onChange();})); else grid.appendChild(field(f.label,item[f.key],v=>{item[f.key]=v;onChange&&onChange();},f.type||'text')); });
+    box.appendChild(grid);const del=document.createElement('button');del.className='btn btn-ghost mt-3 text-red-600 text-sm';del.textContent='🗑 Supprimer';del.addEventListener('click',()=>{arr.splice(idx,1);onChange&&onChange();draw();});box.appendChild(del);wrap.appendChild(box);});
+    const add=document.createElement('button');add.className='btn btn-dark text-sm';add.textContent='＋ '+addLabel;add.addEventListener('click',()=>{const o={};fields.forEach(f=>o[f.key]=f.def!==undefined?f.def:'');arr.push(o);onChange&&onChange();draw();});wrap.appendChild(add);}
+  draw();return wrap;}
+
+/* Sidebar */
+const SECTIONS=[['identite','Identité & logo'],['accueil','Accueil'],['apropos','À propos'],['chiffres','Chiffres clés'],['engagements','Engagements'],['flotte','Flotte & carte'],['emploi','Offres d\'emploi'],['discord','Candidatures & Discord'],['temoignages','Témoignages'],['actualites','Actualités']];
+function buildSidebar(){const n=$('sidenav');n.innerHTML=SECTIONS.map(([k,l])=>`<a class="navlink" data-k="${k}">${l}</a>`).join('');
+  n.querySelectorAll('.navlink').forEach(a=>a.addEventListener('click',()=>{const el=$('card-'+a.dataset.k);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}));}
+
+/* Éditeur */
 function buildEditor(){
-  const E=$('editor'); E.innerHTML='';
-  const save=autosave; // sauvegarde auto (ajout/suppression d'éléments)
-  // garde-fous (anciennes données)
-  W.jobs=W.jobs||[]; W.testimonials=W.testimonials||[]; W.news=W.news||[];
-  W.contact=W.contact||{}; if(W.contact.discordWebhook===undefined)W.contact.discordWebhook='';
-  W.fleet=W.fleet||{deliveries:[],drivers:[]}; W.fleet.deliveries=W.fleet.deliveries||[]; W.fleet.drivers=W.fleet.drivers||[];
-
+  const E=$('editor');E.innerHTML='';let c;
   // Identité
-  let c=sectionCard('Identité / Logo','Texte calligraphié par défaut, ou téléversez votre propre logo (PNG transparent conseillé).');
-  c.appendChild(rowGrid([
-    field('Nom de la marque',W.brand.name,v=>W.brand.name=v),
-    field('Sous-titre',W.brand.tagline,v=>W.brand.tagline=v),
-  ]));
-  const logoType=field('Type de logo','',()=>{}); // replaced by select
-  const sel=document.createElement('div'); sel.innerHTML='<label class="lbl">Type de logo</label>';
-  const s=document.createElement('select'); s.className='fld'; s.innerHTML='<option value="text">Texte calligraphié (par défaut)</option><option value="image">Image téléversée</option>'; s.value=W.brand.logoType;
-  s.addEventListener('change',()=>{W.brand.logoType=s.value;}); sel.appendChild(s);
-  c.appendChild(rowGrid([sel, imageField('Image du logo',W.brand.logoImage,v=>W.brand.logoImage=v)]));
+  c=sectionCard('identite','Identité & logo','Le logo apparaît à gauche du nom, en haut du site. Laissez vide pour l\'emblème par défaut.');
+  c.appendChild(rowGrid([field('Nom de la marque',W.brand.name,v=>W.brand.name=v),field('Sous-titre',W.brand.tagline,v=>W.brand.tagline=v)]));
+  c.appendChild(imageField('Logo (à côté du nom)',W.brand.logoImage,v=>W.brand.logoImage=v,400));
   E.appendChild(c);
-
   // Accueil
-  c=sectionCard('Section Accueil (Hero)');
-  c.appendChild(rowGrid([
-    field('Coordonnées / bandeau',W.hero.coords,v=>W.hero.coords=v),
-    field('Titre',W.hero.title,v=>W.hero.title=v),
-  ]));
+  c=sectionCard('accueil','Accueil (Hero)');
+  c.appendChild(rowGrid([field('Bandeau (coordonnées)',W.hero.coords,v=>W.hero.coords=v),field('Titre',W.hero.title,v=>W.hero.title=v)]));
   c.appendChild(field('Sous-titre',W.hero.subtitle,v=>W.hero.subtitle=v,'area'));
-  c.appendChild(imageField('Image de fond',W.hero.bgImage,v=>W.hero.bgImage=v));
+  c.appendChild(imageField('Image de fond',W.hero.bgImage,v=>W.hero.bgImage=v,2000));
   E.appendChild(c);
-
   // À propos
-  c=sectionCard('Section À propos');
+  c=sectionCard('apropos','À propos');
   c.appendChild(rowGrid([field('Sur-titre',W.about.eyebrow,v=>W.about.eyebrow=v),field('Titre',W.about.title,v=>W.about.title=v)]));
   c.appendChild(field('Texte',W.about.text,v=>W.about.text=v,'area'));
   c.appendChild(imageField('Image',W.about.image,v=>W.about.image=v));
   E.appendChild(c);
-
-  // Stats
-  c=sectionCard('Chiffres clés');
-  c.appendChild(listEditor(W.stats,[{key:'value',label:'Valeur',type:'number',def:0},{key:'suffix',label:'Suffixe (+ % …)'},{key:'label',label:'Libellé'}],'Ajouter un chiffre',save));
+  // Chiffres
+  c=sectionCard('chiffres','Chiffres clés');
+  c.appendChild(listEditor(W.stats,[{key:'value',label:'Valeur',type:'number',def:0},{key:'suffix',label:'Suffixe (+ % …)'},{key:'label',label:'Libellé'}],'Ajouter un chiffre',autosave));
   E.appendChild(c);
-
-  // Services
-  c=sectionCard('Services');
-  c.appendChild(listEditor(W.services,[{key:'title',label:'Titre'},{key:'desc',label:'Description',type:'area'}],'Ajouter un service',save));
-  E.appendChild(c);
-
   // Engagements
-  c=sectionCard('Engagements');
-  c.appendChild(listEditor(W.engagements,[{key:'title',label:'Titre'},{key:'desc',label:'Description',type:'area'}],'Ajouter un engagement',save));
+  c=sectionCard('engagements','Engagements');
+  c.appendChild(listEditor(W.engagements,[{key:'title',label:'Titre'},{key:'desc',label:'Description',type:'area'}],'Ajouter un engagement',autosave));
   E.appendChild(c);
-
+  // Flotte & carte
+  c=sectionCard('flotte','Flotte & carte','Ajoutez vos chauffeurs (photo du camion, fiche), puis placez-les sur la carte du jeu.');
+  c.appendChild(buildFleetCard());
+  E.appendChild(c);
+  // Offres
+  c=sectionCard('emploi','Offres d\'emploi','Titre, description et photo. Les visiteurs postulent via « Postuler ».');
+  c.appendChild(listEditor(W.jobs,[{key:'title',label:'Intitulé du poste'},{key:'desc',label:'Description',type:'area'},{key:'image',label:'Photo',type:'image'}],'Ajouter une offre',autosave));
+  E.appendChild(c);
+  // Discord
+  c=sectionCard('discord','Candidatures & Discord','Les candidatures arrivent en embed via le webhook. Le bouton « Rejoindre » utilise le lien d\'invitation.');
+  const wh=document.createElement('div');wh.innerHTML='<label class="lbl">URL du webhook Discord (candidatures)</label>';const whi=document.createElement('input');whi.className='fld';whi.placeholder='https://discord.com/api/webhooks/...';whi.value=W.discord.webhook||'';whi.addEventListener('input',()=>W.discord.webhook=whi.value);wh.appendChild(whi);
+  const t1=document.createElement('p');t1.className='text-xs text-zinc-500 mt-2';t1.innerHTML='Discord : <b>Paramètres du salon → Intégrations → Webhooks → Nouveau webhook</b> → Copier l\'URL.';wh.appendChild(t1);c.appendChild(wh);
+  const iv=document.createElement('div');iv.className='mt-4';iv.innerHTML='<label class="lbl">Lien d\'invitation Discord (bouton Rejoindre)</label>';const ivi=document.createElement('input');ivi.className='fld';ivi.placeholder='https://discord.gg/votre-invitation';ivi.value=W.discord.invite||'';ivi.addEventListener('input',()=>W.discord.invite=ivi.value);iv.appendChild(ivi);c.appendChild(iv);
+  E.appendChild(c);
   // Témoignages
-  c=sectionCard('Témoignages');
-  c.appendChild(listEditor(W.testimonials,[{key:'name',label:'Nom'},{key:'initials',label:'Initiales'},{key:'role',label:'Fonction / société'},{key:'rating',label:'Note (1-5)',type:'number',def:5},{key:'text',label:'Avis',type:'area'}],'Ajouter un témoignage',save));
+  c=sectionCard('temoignages','Témoignages','Laissez vide pour masquer la section.');
+  c.appendChild(listEditor(W.testimonials,[{key:'name',label:'Nom'},{key:'initials',label:'Initiales'},{key:'role',label:'Fonction'},{key:'rating',label:'Note (1-5)',type:'number',def:5},{key:'text',label:'Avis',type:'area'}],'Ajouter un témoignage',autosave));
   E.appendChild(c);
-
   // Actualités
-  c=sectionCard('Actualités / Posts');
-  c.appendChild(listEditor(W.news,[{key:'title',label:'Titre'},{key:'date',label:'Date'},{key:'tag',label:'Étiquette'},{key:'excerpt',label:'Résumé',type:'area'},{key:'image',label:'Image',type:'image'}],'Ajouter un article',save));
-  E.appendChild(c);
-
-  // Offres d'emploi
-  c=sectionCard('Offres d\'emploi','Chaque offre a un titre, une description et une photo. Les visiteurs postulent via le bouton « Postuler ».');
-  c.appendChild(listEditor(W.jobs,[{key:'title',label:'Intitulé du poste'},{key:'desc',label:'Description',type:'area'},{key:'image',label:'Photo',type:'image'}],'Ajouter une offre',save));
-  E.appendChild(c);
-
-  // Candidatures / Discord
-  c=sectionCard('Candidatures (Discord)','Chaque candidature envoyée depuis le site arrive dans votre salon Discord via un webhook (embed).');
-  const wh=document.createElement('div');
-  wh.innerHTML='<label class="lbl">URL du webhook Discord</label>';
-  const whi=document.createElement('input'); whi.className='fld'; whi.placeholder='https://discord.com/api/webhooks/...'; whi.value=W.contact.discordWebhook||'';
-  whi.addEventListener('input',()=>W.contact.discordWebhook=whi.value);
-  wh.appendChild(whi);
-  const tip=document.createElement('p'); tip.className='text-xs text-zinc-500 mt-2';
-  tip.innerHTML='Dans Discord : <b>Paramètres du salon → Intégrations → Webhooks → Nouveau webhook</b>, puis « Copier l\'URL du webhook » et collez-la ici.';
-  wh.appendChild(tip);
-  c.appendChild(wh);
-  const hr=document.createElement('p'); hr.className='lbl mt-6'; hr.textContent='Coordonnées affichées dans le pied de page (optionnel)'; c.appendChild(hr);
-  c.appendChild(rowGrid([field('Téléphone',W.contact.phone,v=>W.contact.phone=v),field('Email',W.contact.email,v=>W.contact.email=v)]));
-  c.appendChild(field('Adresse',W.contact.address,v=>W.contact.address=v,'area'));
-  E.appendChild(c);
-
-  // Flotte
-  c=sectionCard('Suivi de flotte (carte)','Tapez une ville puis « Trouver les coordonnées », ou saisissez lat/lng à la main.');
-  c.appendChild(rowGrid([field('Ville du siège',W.fleet.baseCity,v=>W.fleet.baseCity=v),field('Lat siège',W.fleet.baseLat,v=>W.fleet.baseLat=v,'number'),field('Lng siège',W.fleet.baseLng,v=>W.fleet.baseLng=v,'number')]));
-  const h1=document.createElement('h3'); h1.className='dsp font-600 mt-5 mb-2'; h1.textContent='Chauffeurs'; c.appendChild(h1);
-  c.appendChild(listEditor(W.fleet.drivers,[{key:'name',label:'Nom'},{key:'city',label:'Ville',type:'city'},{key:'status',label:'Statut (en route / disponible / pause)'},{key:'lat',label:'Latitude',type:'number'},{key:'lng',label:'Longitude',type:'number'}],'Ajouter un chauffeur',save));
-  const h2=document.createElement('h3'); h2.className='dsp font-600 mt-6 mb-2'; h2.textContent='Livraisons'; c.appendChild(h2);
-  c.appendChild(listEditor(W.fleet.deliveries,[{key:'city',label:'Ville',type:'city'},{key:'cargo',label:'Marchandise'},{key:'status',label:'Statut (livré / en cours / planifié)'},{key:'lat',label:'Latitude',type:'number'},{key:'lng',label:'Longitude',type:'number'}],'Ajouter une livraison',save));
+  c=sectionCard('actualites','Actualités','Laissez vide pour masquer la section.');
+  c.appendChild(listEditor(W.news,[{key:'title',label:'Titre'},{key:'date',label:'Date'},{key:'tag',label:'Étiquette'},{key:'excerpt',label:'Résumé',type:'area'},{key:'image',label:'Image',type:'image'}],'Ajouter un article',autosave));
   E.appendChild(c);
 }
-function rowGrid(nodes){const g=document.createElement('div');g.className='grid sm:grid-cols-2 gap-3 mb-3';nodes.forEach(n=>g.appendChild(n));return g;}
 
-/* ---- Sauvegarde automatique (brouillon local) ---- */
-let _autoT;
-function autosave(){clearTimeout(_autoT);setInd('Enregistrement…','text-zinc-400');_autoT=setTimeout(()=>{localStorage.setItem('gf_site_data',JSON.stringify(W));setInd('✓ Brouillon enregistré','text-emerald-600');const dr=document.getElementById('code-drawer');if(dr&&dr.classList.contains('open'))renderCode();},500);}
-function setInd(t,cls){const i=$('auto-ind');if(i){i.textContent=t;i.className='text-xs mr-1 '+(cls||'text-emerald-600');}}
-document.addEventListener('DOMContentLoaded',()=>{});
-$('editor').addEventListener('input',autosave);
-$('editor').addEventListener('change',autosave);
+/* Carte flotte + placement */
+function buildFleetCard(){
+  const root=document.createElement('div');
+  root.appendChild(field('Nom du siège',W.fleet.baseName,v=>{W.fleet.baseName=v;drawMarks();}));
+  root.appendChild(rowGrid([imageField('Image de la carte (ETS2)',W.fleet.mapImage,v=>{W.fleet.mapImage=v;refresh();},1800),imageField('Photo du dépôt (au clic sur le siège)',W.fleet.depotImage,v=>{W.fleet.depotImage=v;})]));
 
-/* ---- Actions ---- */
-$('save').addEventListener('click',()=>{localStorage.setItem('gf_site_data',JSON.stringify(W));setInd('✓ Brouillon enregistré','text-emerald-600');flash('Enregistré (brouillon local) ✔');});
+  // Placement
+  const place=document.createElement('div');place.className='mt-2';
+  place.innerHTML='<label class="lbl">Placer les points sur la carte</label>';
+  const bar=document.createElement('div');bar.className='flex items-center gap-2 mb-2 flex-wrap';
+  const sel=document.createElement('select');sel.className='fld';sel.style.maxWidth='260px';
+  const hint=document.createElement('span');hint.className='text-xs text-zinc-500';hint.textContent='Choisissez une cible puis cliquez sur la carte.';
+  bar.append(sel,hint);place.appendChild(bar);
+  const box=document.createElement('div');box.className='relative rounded-xl overflow-hidden border border-zinc-200';box.style.background='#0a0c0f';
+  const pimg=document.createElement('img');pimg.style.cssText='display:block;width:100%;height:auto;cursor:crosshair;';
+  const layer=document.createElement('div');layer.className='absolute inset-0';layer.style.pointerEvents='none';
+  const ph=document.createElement('div');ph.className='text-zinc-400 text-sm text-center p-10';ph.textContent='Ajoutez l\'image de la carte ci-dessus pour placer les points.';
+  box.append(pimg,layer,ph);place.appendChild(box);
+  root.appendChild(place);
+
+  function fillSel(){sel.innerHTML='<option value="base">Siège</option>'+W.fleet.drivers.map((d,i)=>`<option value="${i}">${(d.name||('Chauffeur '+(i+1)))}</option>`).join('');}
+  function drawMarks(){
+    layer.innerHTML='';
+    if(W.fleet.baseX!=null){const m=document.createElement('div');m.className='pmark';m.style.left=W.fleet.baseX+'%';m.style.top=W.fleet.baseY+'%';m.innerHTML=`<span class="pdiam"></span><span class="plabel">${W.fleet.baseName||'Siège'}</span>`;layer.appendChild(m);}
+    W.fleet.drivers.forEach(d=>{if(d.x==null)return;const m=document.createElement('div');m.className='pmark';m.style.left=d.x+'%';m.style.top=d.y+'%';m.innerHTML=`<span class="pdot"></span><span class="plabel">${d.name||''}</span>`;layer.appendChild(m);});
+  }
+  function refresh(){fillSel();if(W.fleet.mapImage){pimg.src=W.fleet.mapImage;pimg.style.display='block';ph.style.display='none';}else{pimg.removeAttribute('src');pimg.style.display='none';ph.style.display='block';}drawMarks();}
+  pimg.addEventListener('click',e=>{const r=pimg.getBoundingClientRect();let x=((e.clientX-r.left)/r.width)*100,y=((e.clientY-r.top)/r.height)*100;x=Math.max(0,Math.min(100,Math.round(x*10)/10));y=Math.max(0,Math.min(100,Math.round(y*10)/10));const v=sel.value;if(v==='base'){W.fleet.baseX=x;W.fleet.baseY=y;}else{const d=W.fleet.drivers[+v];if(d){d.x=x;d.y=y;}}drawMarks();autosave();});
+
+  // Liste chauffeurs
+  const h=document.createElement('h3');h.className='dsp font-600 mt-6 mb-2';h.textContent='Chauffeurs';root.appendChild(h);
+  const list=listEditor(W.fleet.drivers,[{key:'name',label:'Nom'},{key:'role',label:'Poste / rôle'},{key:'delivery',label:'Livraison choisie'},{key:'steam',label:'Lien profil Steam'},{key:'truckImage',label:'Photo du camion',type:'image'}],'Ajouter un chauffeur',()=>{autosave();fillSel();drawMarks();});
+  root.appendChild(list);
+  refresh();
+  return root;
+}
+
+/* Actions */
+$('save')&&$('save').addEventListener('click',()=>{});
 $('preview').addEventListener('click',()=>{localStorage.setItem('gf_site_data',JSON.stringify(W));window.open('index.html?preview=1','_blank');});
-$('export').addEventListener('click',()=>{
-  localStorage.setItem('gf_site_data',JSON.stringify(W));
-  const blob=new Blob([JSON.stringify(W,null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='data.json';a.click();
-  flash('data.json exporté — déposez-le sur GitHub pour publier.');
-});
+$('export').addEventListener('click',()=>{localStorage.setItem('gf_site_data',JSON.stringify(W));const b=new Blob([JSON.stringify(W,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='data.json';a.click();flash('data.json exporté.');});
 $('import').addEventListener('click',()=>$('import-file').click());
-$('import-file').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{W=JSON.parse(r.result);localStorage.setItem('gf_site_data',JSON.stringify(W));buildEditor();flash('Importé ✔');}catch(err){alert('Fichier JSON invalide.');}};r.readAsText(f);});
+$('import-file').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{W=JSON.parse(r.result);normalize();localStorage.setItem('gf_site_data',JSON.stringify(W));buildEditor();flash('Importé ✔');}catch(err){alert('JSON invalide.');}};r.readAsText(f);});
 $('logout').addEventListener('click',()=>{sessionStorage.removeItem('gf_admin');location.reload();});
 
-/* ---- Panneau Code (copier-coller) ---- */
+/* Panneau Code */
 const drawer=$('code-drawer'),ov=$('code-ov');
 function renderCode(){const txt=JSON.stringify(W,null,2);const n=txt.split('\n').length;$('gutter').textContent=Array.from({length:n},(_,i)=>i+1).join('\n');$('codepre').textContent=txt;}
 function openCode(){renderCode();drawer.classList.add('open');ov.classList.add('open');}
 function closeCode(){drawer.classList.remove('open');ov.classList.remove('open');}
-$('show-code').addEventListener('click',openCode);
-$('close-code').addEventListener('click',closeCode);
-ov.addEventListener('click',closeCode);
-$('copy-code').addEventListener('click',async()=>{const txt=JSON.stringify(W,null,2);let ok=false;try{await navigator.clipboard.writeText(txt);ok=true;}catch(e){const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{ok=document.execCommand('copy');}catch(_){}ta.remove();}flash(ok?'Code copié ✔ — collez-le dans data.json sur GitHub':'Copie impossible : sélectionnez le texte manuellement.');});
+$('show-code').addEventListener('click',openCode);$('close-code').addEventListener('click',closeCode);ov.addEventListener('click',closeCode);
+$('copy-code').addEventListener('click',async()=>{const txt=JSON.stringify(W,null,2);let ok=false;try{await navigator.clipboard.writeText(txt);ok=true;}catch(e){const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{ok=document.execCommand('copy');}catch(_){}ta.remove();}flash(ok?'Code copié ✔':'Copie impossible.');});
 
-function flash(msg){const d=document.createElement('div');d.textContent=msg;d.className='fixed bottom-5 left-1/2 -translate-x-1/2 bg-zinc-900 text-white text-sm px-4 py-2 rounded-lg shadow-lg z-50';document.body.appendChild(d);setTimeout(()=>d.remove(),2600);}
+function flash(msg){const d=document.createElement('div');d.textContent=msg;d.className='fixed bottom-5 left-1/2 -translate-x-1/2 bg-zinc-900 text-white text-sm px-4 py-2 rounded-lg shadow-lg z-[70]';document.body.appendChild(d);setTimeout(()=>d.remove(),2600);}
 </script>
 </body>
 </html>
